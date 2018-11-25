@@ -1,3 +1,10 @@
+.container {
+  margin-right: 4rem;
+  border: 1px solid #eaeaea;
+  border-radius: 3px;
+  padding: 2rem;
+}
 .heading {
   font-size: 1.5rem;
+  padding-bottom: 1.5rem;
 }

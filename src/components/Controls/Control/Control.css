@@ -7,8 +7,8 @@
   padding: 1rem 0;
 }
 
-.container :first-child {
-  width: 100px;
+.container > :first-child {
+  width: 10rem;
   font-weight: bold;
 }
 
