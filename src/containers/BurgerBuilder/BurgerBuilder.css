@@ -1,0 +1,12 @@
+.content {
+  width: 100%;
+  display: flex;
+}
+
+.burger {
+  width: 60%;
+}
+
+.controls {
+  width: 40%;
+}
