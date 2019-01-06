@@ -1,0 +1,39 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 0px solid white;
+}
+
+.container > * {
+  flex: 1
+}
+
+@media (min-width: 1025px) {
+  .container {
+    border-top: 1px solid #eaeaea;
+  }
+}
+
+.title {
+  text-align: left;
+  font-size: inherit;
+}
+
+.price {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.button {
+  padding: 1rem 1.5rem;
+  outline: none;
+  background: blue;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  font-size: inherit;
+  cursor: pointer;
+}

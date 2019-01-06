@@ -1,12 +1,31 @@
+.heading {
+  text-align: center;
+  font-size: 2rem;
+  padding-bottom: 2rem;
+}
 .content {
-  width: 100%;
-  display: flex;
+  display: block;
+  border-radius: 3px;
+  padding: 2rem;
+  border: 1px solid #eaeaea;
+}
+@media (min-width: 1025px) {
+  .heading {
+    text-align: left;
+  }
+  .content {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    padding: 0;
+    border: none;
+  }
+  .content > * {
+    flex: 1 auto;
+  }
 }
 
 .burger {
-  width: 60%;
-}
-
-.controls {
-  width: 40%;
+  align-self: center;
+  height: 100%;
 }

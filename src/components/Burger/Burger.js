@@ -13,10 +13,12 @@ const burger = (props) => {
     })
   })
   return (
-    <div className={classes.burger}>
-      <Ingredient type="bunTop" />
-      {ingredients.every(arr => !arr.length) ? 'No Burger Ingredients Added' : ingredients }
-      <Ingredient type="bunBtm" />
+    <div className={classes.container}>
+      <div className={classes.burger}>
+        <Ingredient type="bunTop" />
+        {ingredients.every(arr => !arr.length) ? 'No Burger Ingredients Added' : ingredients }
+        <Ingredient type="bunBtm" />
+      </div>
     </div>
   )
 }

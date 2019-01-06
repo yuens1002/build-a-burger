@@ -1,0 +1,17 @@
+.openButton {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: auto;
+  padding: 0 2rem;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s ease-in
+}
+.openButton:hover  {
+  color: blue;
+  background-color: transparent;
+  border-bottom-width: 3px;
+  border-bottom-style: solid;
+  border-bottom-color: rgba(0, 0, 255, 0.3);
+  cursor: pointer;
+}

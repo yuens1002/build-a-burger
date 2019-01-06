@@ -1,19 +1,24 @@
 import React from 'react'
 import classes from './Control.css'
+import Button from '../../UI/Button/Button'
 
 let isDisabled = (label, ingredients) => Boolean(!ingredients[label.toLowerCase()])
 
 const control = (props) => (
   <div className={classes.container}>
-    <div>{`${props.label} x ${props.ingredients[props.label.toLowerCase()]}`}</div>
-    <div><button className={classes.button} onClick={() => props.updateIngredient(props.label.toLowerCase(), 1)}>+</button></div>
+    <div>{`${props.label} x${props.ingredients[props.label.toLowerCase()]}`}</div>
     <div>
-      <button
-        onClick={() => props.updateIngredient(props.label.toLowerCase(), 0)}
-        className={classes.button}
-        disabled={isDisabled(props.label, props.ingredients)}>
-        -
-      </button>
+      <Button
+        type="larger"
+        clicked={() => props.updateIngredient(props.label.toLowerCase(), 1)}
+      >+</Button>
+    </div>
+    <div>
+      <Button
+        type="larger"
+        clicked={() => props.updateIngredient(props.label.toLowerCase(), 0)}
+        disabled={isDisabled(props.label, props.ingredients)}
+      >-</Button>
     </div>
   </div>
 )

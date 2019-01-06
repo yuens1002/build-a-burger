@@ -1,0 +1,12 @@
+.navItems {
+  display: block;
+  height: 100%;
+}
+
+@media (min-width: 1025px) {
+  .navItems {
+    display: inherit;
+    align-items: center;
+    height: 100%;
+  }
+}
