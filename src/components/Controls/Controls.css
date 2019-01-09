@@ -1,6 +1,15 @@
 
 .controls {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-bottom: 1rem;
+}
+
+@media (min-width: 1025px) {
+  .controls {
+    padding-bottom: 2rem;
+    margin-right: -0.5rem;
+  }
 }

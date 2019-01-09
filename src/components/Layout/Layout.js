@@ -5,6 +5,7 @@ import { overFlowHidden }from '../../index.css'
 import Toolbar from '../Nav/Toolbar/Toolbar'
 import SideDrawer from '../SideDrawer/SideDrawer'
 import Backdrop from '../UI/Backdrop/Backdrop'
+import Footer from '../Footer/Footer'
 
 class Layout extends Component {
 
@@ -37,6 +38,7 @@ class Layout extends Component {
             isDrawerOpen={this.state.isDrawerOpen} /> : null}
         <Toolbar toOpenDrawer={this.openDrawerHandler} />
         <main className={classes.content}>{this.props.children}</main>
+        <Footer>Sunny Yuen -- Built with React, 2019 MIT Lic.</Footer>
       </Aux>
     )
   }

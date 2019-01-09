@@ -8,8 +8,37 @@ import OrderDetails from '../../components/OrderDetails/OrderDetails'
 import Backdrop from '../../components/UI/Backdrop/Backdrop'
 import Order from '../../components/UI/Order/Order'
 import Aux from '../../hoc/Aux'
+import AxiosInst from '../../axios-order'
+import Spinner from '../../components/UI/Spinner/Spinner'
 
 class BurgerBuilder extends Component {
+
+  orderHandler = () => {
+    //xxx.json for firebase only
+    this.setState({isLoading: true})
+    const order = {
+      ingredients: this.state.ingredients,
+      price: this.state.totalPrice,
+      customer: {
+        name: 'Sunny Yuen',
+        address: 'Test Address',
+        zipcode: 11122,
+        country: 'US'
+      },
+      email: 'test@gmail.com',
+      delivery: 'fastest'
+    }
+    AxiosInst.post('/orders.json', order)
+    .then(response => {
+      setTimeout(() => {
+        this.setState({isModalOpen: false, isLoading: false})
+      }, 500)
+
+    })
+    .catch(response => {
+      this.setState({isLoading: false, isModalOpen: true})
+    })
+  }
 
   updateIngredientHandler = (igName, changeType) => {
     this.setState(state => {
@@ -57,22 +86,27 @@ class BurgerBuilder extends Component {
     },
     price: 4,
     basePrice: 4,
-    isModalOpen: false
+    isModalOpen: false,
+    isLoading: false
   }
+
 
   render () {
     return (
       <Aux>
         {this.state.isModalOpen ? <Backdrop toHideLayerOnTop={this.toggleModalHandler} /> : null}
-        <Modal isModalOpen={this.state.isModalOpen}>
-          <OrderDetails
-            toggleModal={this.toggleModalHandler}
-            prices={this.state.prices}
-            price={this.state.price}
-            ingredients={this.state.ingredients}/>
+        <Modal isModalOpen={this.state.isModalOpen} isLoading={this.state.isLoading}>
+          {this.state.isLoading ? <Spinner /> :
+            <OrderDetails
+              toggleModal={this.toggleModalHandler}
+              prices={this.state.prices}
+              price={this.state.price}
+              ingredients={this.state.ingredients}
+              toPlaceOrder={this.orderHandler} /> }
         </Modal>
         <div className={classes.heading}>Build a Custom Burger</div>
         <div className={classes.content}>
+          <Burger ingredients={this.state.ingredients} />
           <div className={classes.controls}>
             <Controls
               updateIngredient={this.updateIngredientHandler}
@@ -81,7 +115,6 @@ class BurgerBuilder extends Component {
               price={this.state.price}
               toggleModal={this.toggleModalHandler} />
           </div>
-          <Burger ingredients={this.state.ingredients} />
         </div>
         <Order
           toggleModal={this.toggleModalHandler}

@@ -34,7 +34,7 @@ const orderDetails = (props) => {
       <div className={classes.confirmation}>
         <p>Continue to Order?</p>
         <Button clicked={props.toggleModal}>NO</Button>
-        <Button clicked={() => alert('continued clicked')}>YES</Button>
+        <Button clicked={props.toPlaceOrder}>YES</Button>
       </div>
 
     </div>

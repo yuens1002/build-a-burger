@@ -1,16 +1,17 @@
 .heading {
   text-align: center;
-  font-size: 2rem;
-  padding-bottom: 2rem;
+  font-size: 1.5rem;
+  padding-bottom: 1.5rem;
 }
 .content {
   display: block;
   border-radius: 3px;
-  padding: 2rem;
+  padding: 0, 2rem 0 2rem;
   border: 1px solid #eaeaea;
 }
 @media (min-width: 1025px) {
   .heading {
+    font-size: 2rem;
     text-align: left;
   }
   .content {
