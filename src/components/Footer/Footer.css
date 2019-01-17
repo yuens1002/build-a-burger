@@ -1,20 +1,13 @@
 .footer {
-  display: none;
-}
-
-@media (min-width: 1025px) {
-  .footer {
-    display: block;
-    position: fixed;
-    left: 0px;
-    bottom: 0px;
-    width: 100%;
-    padding-top: .75rem;
-    height: 2.25rem;
-    font-size: .75rem;
-    color: #999;
-    background-color: #fefefe;
-    text-align: center;
-    letter-spacing: 0.1rem;
-  }
+  display: block;
+  position: fixed;
+  left: 0px;
+  bottom: 0px;
+  width: 100%;
+  padding-top: .75rem;
+  height: 2.25rem;
+  font-size: .7rem;
+  color: #999;
+  background-color: #eee;
+  text-align: center;
 }

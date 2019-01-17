@@ -1,7 +1,14 @@
 .spinner {
   display: flex;
+  border: 1px solid blue;
+  border-radius: 3px;
   justify-content: center;
-  color: white;
-  align-items: center;
+  color: blue;
+  padding: 2rem;
   margin: auto 0;
+}
+
+.spinner.error {
+  color: red;
+  border-color: red;
 }

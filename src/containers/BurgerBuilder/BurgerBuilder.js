@@ -1,20 +1,44 @@
 import React, { Component } from 'react'
 import classes from './BurgerBuilder.css'
-import { overFlowHidden }from '../../index.css'
+import { overFlowHidden } from '../../index.css'
 import Burger from '../../components/Burger/Burger'
 import Controls from '../../components/Controls/Controls'
 import Modal from '../../components/Modal/Modal'
 import OrderDetails from '../../components/OrderDetails/OrderDetails'
-import Backdrop from '../../components/UI/Backdrop/Backdrop'
 import Order from '../../components/UI/Order/Order'
 import Aux from '../../hoc/Aux'
 import AxiosInst from '../../axios-order'
 import Spinner from '../../components/UI/Spinner/Spinner'
+import errorWrapper from '../../hoc/errorWrapper/errorWrapper'
 
 class BurgerBuilder extends Component {
 
+  componentDidMount () {
+    console.log('[component did mount]: BurgerBuilder')
+    this.setState({isLoading: true})
+    AxiosInst
+      .get('https://burger-builder-c7629.firebaseio.com/ingredients.json')
+      .then(({data}) => {
+        this.setState({ingredients: data})
+        this.setState({isLoading: false})
+      })
+      .then(() => {
+        this.setState({isLoading: true})
+        AxiosInst
+          .get('https://burger-builder-c7629.firebaseio.com/prices.json')
+          .then(({data}) => {
+            this.setState({prices: data})
+            this.setState({isLoading: false})
+            this.updatePrice()
+          })
+      })
+      .catch((error) => {
+        this.setState({hasPageError: true})
+        this.setState({isLoading: false})
+      })
+  }
+
   orderHandler = () => {
-    //xxx.json for firebase only
     this.setState({isLoading: true})
     const order = {
       ingredients: this.state.ingredients,
@@ -28,15 +52,14 @@ class BurgerBuilder extends Component {
       email: 'test@gmail.com',
       delivery: 'fastest'
     }
+    /*****firebase *****************
+    xxx.json for firebase only
+    xxx.json, path/to/record
+    ********************************/
     AxiosInst.post('/orders.json', order)
     .then(response => {
-      setTimeout(() => {
-        this.setState({isModalOpen: false, isLoading: false})
-      }, 500)
-
-    })
-    .catch(response => {
-      this.setState({isLoading: false, isModalOpen: true})
+      this.setState({isLoading: false})
+      this.toggleModalHandler()
     })
   }
 
@@ -69,59 +92,63 @@ class BurgerBuilder extends Component {
   }
 
   state = {
-    ingredients: {
-      bacon: 0,
-      cheese: 0,
-      meat: 0,
-      veg: 0,
-    },
+    ingredients: null,
     controls: [
        'Bacon', 'Cheese', 'Meat', 'Veg'
     ],
-    prices: {
-      bacon: 2,
-      cheese: 1,
-      meat: 3,
-      veg: 1.5
-    },
-    price: 4,
+    prices: null,
+    price: null,
     basePrice: 4,
     isModalOpen: false,
-    isLoading: false
+    isLoading: false,
+    hasPageError: false
   }
-
 
   render () {
     return (
       <Aux>
-        {this.state.isModalOpen ? <Backdrop toHideLayerOnTop={this.toggleModalHandler} /> : null}
-        <Modal isModalOpen={this.state.isModalOpen} isLoading={this.state.isLoading}>
-          {this.state.isLoading ? <Spinner /> :
+        <Modal
+          toCloseModal={this.toggleModalHandler}
+          isModalOpen={this.state.isModalOpen}
+          isLoading={this.state.isLoading}
+        >
+          {
+            this.state.isLoading ?
+            <Spinner error={this.state.hasPageError} /> :
+            !this.state.ingredients || !this.state.prices ? '' :
             <OrderDetails
               toggleModal={this.toggleModalHandler}
               prices={this.state.prices}
               price={this.state.price}
               ingredients={this.state.ingredients}
-              toPlaceOrder={this.orderHandler} /> }
+              toPlaceOrder={this.orderHandler}
+            />
+          }
         </Modal>
         <div className={classes.heading}>Build a Custom Burger</div>
-        <div className={classes.content}>
-          <Burger ingredients={this.state.ingredients} />
-          <div className={classes.controls}>
-            <Controls
-              updateIngredient={this.updateIngredientHandler}
-              controls={this.state.controls}
-              ingredients={this.state.ingredients}
+        {
+          !this.state.ingredients || !this.state.prices ?
+          <Spinner error={this.state.hasPageError} /> :
+          <Aux>
+            <div className={classes.content}>
+              <Burger ingredients={this.state.ingredients} />
+              <div className={classes.controls}>
+                <Controls
+                  updateIngredient={this.updateIngredientHandler}
+                  controls={this.state.controls}
+                  ingredients={this.state.ingredients}
+                  price={this.state.price}
+                  toggleModal={this.toggleModalHandler} />
+              </div>
+            </div>
+            <Order
+              toggleModal={this.toggleModalHandler}
               price={this.state.price}
-              toggleModal={this.toggleModalHandler} />
-          </div>
-        </div>
-        <Order
-          toggleModal={this.toggleModalHandler}
-          price={this.state.price}
-        />
+            />
+          </Aux>
+        }
       </Aux>
     )
   }
 }
-export default BurgerBuilder
+export default errorWrapper(BurgerBuilder, AxiosInst)
