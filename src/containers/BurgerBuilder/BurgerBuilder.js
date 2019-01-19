@@ -6,7 +6,6 @@ import Controls from '../../components/Controls/Controls'
 import Modal from '../../components/Modal/Modal'
 import OrderDetails from '../../components/OrderDetails/OrderDetails'
 import Order from '../../components/UI/Order/Order'
-import Aux from '../../hoc/Aux'
 import AxiosInst from '../../axios-order'
 import Spinner from '../../components/UI/Spinner/Spinner'
 import errorWrapper from '../../hoc/errorWrapper/errorWrapper'
@@ -16,26 +15,18 @@ class BurgerBuilder extends Component {
   componentDidMount () {
     console.log('[component did mount]: BurgerBuilder')
     this.setState({isLoading: true})
-    AxiosInst
-      .get('https://burger-builder-c7629.firebaseio.com/ingredients.json')
-      .then(({data}) => {
-        this.setState({ingredients: data})
-        this.setState({isLoading: false})
-      })
-      .then(() => {
-        this.setState({isLoading: true})
-        AxiosInst
-          .get('https://burger-builder-c7629.firebaseio.com/prices.json')
-          .then(({data}) => {
-            this.setState({prices: data})
-            this.setState({isLoading: false})
-            this.updatePrice()
-          })
-      })
-      .catch((error) => {
-        this.setState({hasPageError: true})
-        this.setState({isLoading: false})
-      })
+    AxiosInst.get('/ingredients.json')
+    .then(({data}) => {
+      this.setState({ingredients: data})
+      return AxiosInst.get('/prices.json')
+    }).then(({data}) => {
+      this.setState({prices: data})
+      this.setState({isLoading: false})
+      this.updatePrice()
+    }).catch((error) => {
+      this.setState({hasPageError: true})
+      this.setState({isLoading: false})
+    })
   }
 
   orderHandler = () => {
@@ -106,7 +97,7 @@ class BurgerBuilder extends Component {
 
   render () {
     return (
-      <Aux>
+      <React.Fragment>
         <Modal
           toCloseModal={this.toggleModalHandler}
           isModalOpen={this.state.isModalOpen}
@@ -129,7 +120,7 @@ class BurgerBuilder extends Component {
         {
           !this.state.ingredients || !this.state.prices ?
           <Spinner error={this.state.hasPageError} /> :
-          <Aux>
+          <React.Fragment>
             <div className={classes.content}>
               <Burger ingredients={this.state.ingredients} />
               <div className={classes.controls}>
@@ -145,9 +136,9 @@ class BurgerBuilder extends Component {
               toggleModal={this.toggleModalHandler}
               price={this.state.price}
             />
-          </Aux>
+          </React.Fragment>
         }
-      </Aux>
+      </React.Fragment>
     )
   }
 }
