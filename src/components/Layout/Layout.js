@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import Aux from '../../hoc/Aux'
 import classes from './Layout.css'
 import { overFlowHidden }from '../../index.css'
 import Toolbar from '../Nav/Toolbar/Toolbar'
@@ -29,7 +28,7 @@ class Layout extends Component {
 
   render () {
     return (
-      <Aux>
+      <React.Fragment>
         {this.state.isDrawerOpen ?
           <Backdrop toHideLayerOnTop={this.closeDrawerHandler} /> : null}
         {this.state.isDrawerOpen ?
@@ -39,7 +38,7 @@ class Layout extends Component {
         <Toolbar toOpenDrawer={this.openDrawerHandler} />
         <main className={classes.content}>{this.props.children}</main>
         <Footer>Sunny Yuen -- Built with React, 2019 MIT Lic.</Footer>
-      </Aux>
+      </React.Fragment>
     )
   }
 }

@@ -6,7 +6,7 @@ import Controls from '../../components/Controls/Controls'
 import Modal from '../../components/Modal/Modal'
 import OrderDetails from '../../components/OrderDetails/OrderDetails'
 import Order from '../../components/UI/Order/Order'
-import AxiosInst from '../../axios-order'
+import axiosInst from '../../axios-order'
 import Spinner from '../../components/UI/Spinner/Spinner'
 import errorWrapper from '../../hoc/errorWrapper/errorWrapper'
 
@@ -15,10 +15,10 @@ class BurgerBuilder extends Component {
   componentDidMount () {
     console.log('[component did mount]: BurgerBuilder')
     this.setState({isLoading: true})
-    AxiosInst.get('/ingredients.json')
+    axiosInst.get('/ingredients.json')
     .then(({data}) => {
       this.setState({ingredients: data})
-      return AxiosInst.get('/prices.json')
+      return axiosInst.get('/prices.json')
     }).then(({data}) => {
       this.setState({prices: data})
       this.setState({isLoading: false})
@@ -47,7 +47,7 @@ class BurgerBuilder extends Component {
     xxx.json for firebase only
     xxx.json, path/to/record
     ********************************/
-    AxiosInst.post('/orders.json', order)
+    axiosInst.post('/orders.json', order)
     .then(response => {
       this.setState({isLoading: false})
       this.toggleModalHandler()
@@ -142,4 +142,4 @@ class BurgerBuilder extends Component {
     )
   }
 }
-export default errorWrapper(BurgerBuilder, AxiosInst)
+export default errorWrapper(BurgerBuilder, axiosInst)
