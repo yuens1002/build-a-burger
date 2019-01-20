@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import classes from './BurgerBuilder.css'
-import { overFlowHidden } from '../../index.css'
+import { overFlowHidden, heading } from '../../index.css'
 import Burger from '../../components/Burger/Burger'
 import Controls from '../../components/Controls/Controls'
 import Modal from '../../components/Modal/Modal'
@@ -13,7 +13,9 @@ import errorWrapper from '../../hoc/errorWrapper/errorWrapper'
 class BurgerBuilder extends Component {
 
   componentDidMount () {
+
     console.log('[component did mount]: BurgerBuilder')
+    // if (this.state.ingredients || this.state.prices) return
     this.setState({isLoading: true})
     axiosInst.get('/ingredients.json')
     .then(({data}) => {
@@ -30,39 +32,38 @@ class BurgerBuilder extends Component {
   }
 
   orderHandler = () => {
-    this.setState({isLoading: true})
-    const order = {
-      ingredients: this.state.ingredients,
-      price: this.state.totalPrice,
-      customer: {
-        name: 'Sunny Yuen',
-        address: 'Test Address',
-        zipcode: 11122,
-        country: 'US'
-      },
-      email: 'test@gmail.com',
-      delivery: 'fastest'
-    }
-    /*****firebase *****************
-    xxx.json for firebase only
-    xxx.json, path/to/record
-    ********************************/
-    axiosInst.post('/orders.json', order)
-    .then(response => {
-      this.setState({isLoading: false})
-      this.toggleModalHandler()
-    })
+    // this.setState({isLoading: true})
+    // const order = {
+    //   ingredients: this.state.ingredients,
+    //   price: this.state.totalPrice,
+    //   customer: {
+    //     name: 'Sunny Yuen',
+    //     address: 'Test Address',
+    //     zipcode: 11122,
+    //     country: 'US'
+    //   },
+    //   email: 'test@gmail.com',
+    //   delivery: 'fastest'
+    // }
+    // /*****firebase *****************
+    // xxx.json for firebase only
+    // xxx.json, path/to/record
+    // ********************************/
+    // axiosInst.post('/orders.json', order)
+    // .then(response => {
+    //   this.setState({isLoading: false})
+    //   this.toggleModalHandler()
+    // })
+    this.props.history.push('/bag')
   }
-
   updateIngredientHandler = (igName, changeType) => {
     this.setState(state => {
       const _ig = {...state.ingredients}
       changeType ? ++_ig[igName] : --_ig[igName]
-      return state.ingredients = _ig
+      return ({ingredients: _ig})
     })
     this.updatePrice()
   }
-
   updatePrice = () => {
     this.setState(state => {
       return state.price =
@@ -116,7 +117,7 @@ class BurgerBuilder extends Component {
             />
           }
         </Modal>
-        <div className={classes.heading}>Build a Custom Burger</div>
+        <div className={heading}>Build a Custom Burger</div>
         {
           !this.state.ingredients || !this.state.prices ?
           <Spinner error={this.state.hasPageError} /> :

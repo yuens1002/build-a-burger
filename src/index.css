@@ -21,6 +21,23 @@ body {
   background-color: #fafafa;
 }
 
+a {
+  color: black;
+  text-decoration: none;
+}
+
+.heading {
+  text-align: center;
+  font-size: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
+.container {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
 @media (min-width: 1025px) {
   /* background by SVGBackgrounds.com */
   /* body {
@@ -30,21 +47,22 @@ body {
     background-attachment: fixed;
     background-size: cover;
   } */
-}
 
-.container {
-  padding: 0;
-  margin: 0;
-  width: 100%;
-}
-
-.overFlowHidden {
-  overflow: hidden;
-}
-
-@media (min-width: 1025px) {
   .container {
     max-width: 1024px;
     margin: 0 auto;
   }
+
+  .heading {
+    font-size: 2rem;
+    text-align: left;
+  }
+
+
+}
+
+
+
+.overFlowHidden {
+  overflow: hidden;
 }

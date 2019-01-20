@@ -10,4 +10,7 @@
   color: #999;
   background-color: #eee;
   text-align: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
 }
