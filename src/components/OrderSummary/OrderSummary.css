@@ -1,0 +1,49 @@
+.item {
+  display: block;
+  border-bottom: 1px solid #eee;
+  padding: 1rem 0;
+}
+
+.item.header {
+  display: none;
+  font-size: .8rem;
+  padding-bottom: 1rem;
+  padding-top: 0;
+  font-weight: bold;
+  color: #ccc;
+}
+
+.qty, .desc, .controls, .price {
+  width: 100%
+}
+
+@media (min-width: 1025px) {
+  .item.header {
+    display: flex;
+  }
+  .item {
+    display: flex;
+    align-items: center;
+  }
+  .price, .unitPrice, .deleteItem {
+    text-align: center;
+  }
+  .qty {
+    width: 15%;
+    display: flex;
+  }
+  .desc {
+    width: 60%;
+    font-size: .9rem;
+    padding-right: 2rem;
+  }
+  .desc h3 {
+    margin-top: 0;
+  }
+  .unitPrice {
+    width: 15%;
+  }
+  .deleteItem {
+    width: 10%;
+  }
+}

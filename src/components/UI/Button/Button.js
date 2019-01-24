@@ -5,7 +5,9 @@ const getButtonClass = (type) => {
     [undefined]: () => classes.button,
     close: () => [classes.button, classes.close].join(' '),
     larger: () => [classes.button, classes.larger].join(' '),
-    primary: () => [classes.button, classes.primary].join(' ')
+    smaller: () => [classes.button, classes.smaller].join(' '),
+    primary: () => [classes.button, classes.primary].join(' '),
+    del: () => [classes.button, classes.del].join(' ')
   })[type]()
 }
 const button = (props) => {

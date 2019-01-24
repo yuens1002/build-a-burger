@@ -9,16 +9,24 @@ import Order from '../../components/UI/Order/Order'
 import axiosInst from '../../axios-order'
 import Spinner from '../../components/UI/Spinner/Spinner'
 import errorWrapper from '../../hoc/errorWrapper/errorWrapper'
+import { connect } from 'react-redux'
+import { addToCart } from '../../store/actions'
+
+function mapDispatchToProps(dispatch) {
+  return ({
+    addToCart: order => dispatch(addToCart(order))
+  })
+}
 
 class BurgerBuilder extends Component {
 
   componentDidMount () {
-
     console.log('[component did mount]: BurgerBuilder')
     // if (this.state.ingredients || this.state.prices) return
     this.setState({isLoading: true})
     axiosInst.get('/ingredients.json')
     .then(({data}) => {
+      // this.props.addIngredients({ingredients: data})
       this.setState({ingredients: data})
       return axiosInst.get('/prices.json')
     }).then(({data}) => {
@@ -54,7 +62,18 @@ class BurgerBuilder extends Component {
     //   this.setState({isLoading: false})
     //   this.toggleModalHandler()
     // })
-    this.props.history.push('/bag')
+    const queryParams = []
+    for (let key in this.state.ingredients) {
+      if (this.state.ingredients[key]) {
+        queryParams.push(
+          `&${encodeURIComponent(key)}=${encodeURIComponent(this.state.ingredients[key])}`
+        )
+      }
+    }
+    this.props.history.push({
+      pathname: '/bag',
+      search: queryParams.join('')
+    })
   }
   updateIngredientHandler = (igName, changeType) => {
     this.setState(state => {
@@ -81,6 +100,32 @@ class BurgerBuilder extends Component {
     this.toggleOverFlowClass()
     const _modalOpen = this.state.isModalOpen
     return this.setState({isModalOpen : !_modalOpen})
+  }
+
+  get customBurgerDesc () {
+    let str = 'Ingredient(s) addded to your custom burger: '
+    const i = {...this.state.ingredients}
+    const _addedIngredients = Object.keys(i).reduce((all, key) => {
+      if (i[key]) { all[key] = i[key] }
+      return all
+    }, {})
+    Object.keys(_addedIngredients).forEach((key, n) => {
+      str = str.concat(`${key} x${i[key]}${n < Object.keys(_addedIngredients).length-1 ? ', ' : ''}`)
+    })
+    return str
+  }
+
+  get customBurger () {
+    return ({
+      title: 'Custom Burger',
+      desc: this.customBurgerDesc,
+      price: this.state.price,
+      qty: 1
+    })
+  }
+
+  addToCartHandler = () => {
+    this.props.addToCart(this.customBurger)
   }
 
   state = {
@@ -134,7 +179,7 @@ class BurgerBuilder extends Component {
               </div>
             </div>
             <Order
-              toggleModal={this.toggleModalHandler}
+              toAddToCart={this.addToCartHandler}
               price={this.state.price}
             />
           </React.Fragment>
@@ -143,4 +188,5 @@ class BurgerBuilder extends Component {
     )
   }
 }
-export default errorWrapper(BurgerBuilder, axiosInst)
+
+export default errorWrapper(connect(null, mapDispatchToProps)(BurgerBuilder), axiosInst)

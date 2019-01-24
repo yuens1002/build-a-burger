@@ -12,7 +12,7 @@ class App extends Component {
       <div className={container}>
         <Layout>
           <Route path="/builder" component={BurgerBuilder}/>
-          <Route path="/bag" render={() => <Cart />}/>
+          <Route exact path="/bag" component={Cart}/>
           <Route exact path="/" render={() => (<h1>Menu</h1>)}/>
         </Layout>
       </div>
