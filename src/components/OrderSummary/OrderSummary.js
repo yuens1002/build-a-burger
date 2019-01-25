@@ -16,9 +16,9 @@ const orderSummary = (props) => {
           <OrderItem
           key={n}
           order={order}
-          toAddQty={props.toAddQty}
-          toDeleteItem={props.toDeleteItem}
-          toDecreseQty={props.toDecreseQty} />
+          toAddQty={() => props.toAddQty(n)}
+          toDeleteItem={() => props.toDeleteItem(n)}
+          toDecreseQty={() => props.toDecreseQty(n)} />
         )
       })}
     </React.Fragment>

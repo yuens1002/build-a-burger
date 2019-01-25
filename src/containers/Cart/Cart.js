@@ -3,44 +3,65 @@ import OrderSummary from '../../components/OrderSummary/OrderSummary'
 import { heading } from '../../index.css'
 import classes from './Cart.css'
 import { connect } from 'react-redux'
-const mapStateToProps = ({orders}) => ({orders})
+
+import { incItemQty, decItemQty, delItem } from '../../store/actions'
+
+function mapStateToProps (state) {
+  return {
+    orders: state.orders
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return ({
+    incItemQty: index => dispatch(incItemQty(index)),
+    decItemQty: index => dispatch(decItemQty(index)),
+    delItem: index => dispatch(delItem(index))
+  })
+}
 
 class Cart extends Component {
 
-  componentDidMount () {
-    const query = new URLSearchParams(this.props.location.search)
-    const ingredients = {}
-    for (let param of query.entries()) {
-      ingredients[param[0]] = +param[1]
-    }
+  // componentDidMount () {
+  //   const query = new URLSearchParams(this.props.location.search)
+  //   const ingredients = {}
+  //   for (let param of query.entries()) {
+  //     ingredients[param[0]] = +param[1]
+  //   }
+  //
+  //   this.setState(state => {
+  //     const orders = [...state.orders]
+  //     orders.push({
+  //       ...ingredients,
+  //       name: 'Custom Burger',
+  //       qty: 1,
+  //       price: '4.50'
+  //     })
+  //     return {orders}
+  //   })
+  // }
 
-    this.setState(state => {
-      const orders = [...state.orders]
-      orders.push({
-        ...ingredients,
-        name: 'Custom Burger',
-        qty: 1,
-        price: '4.50'
-      })
-      return {orders}
-    })
+  // state = {
+  //   customIngredients: {
+  //     bacon: 0,
+  //     cheese: 0,
+  //     meat: 0,
+  //     veg: 0
+  //   },
+  //   orders: []
+  // }
+
+  addQtyHandler = (index) => {
+    this.props.incItemQty(index)
   }
 
-  state = {
-    ingredients: {
-      bacon: 0,
-      cheese: 0,
-      meat: 0,
-      veg: 0
-    },
-    orders: []
+  decreaseQtyHandler = (index) => {
+    this.props.decItemQty(index)
   }
 
-  addQtyHandler = () => {}
-
-  decreaseQtyHandler = () => {}
-
-  deleteItemHandler = () => {}
+  deleteItemHandler = (index) => {
+    this.props.delItem(index)
+  }
 
 
 
@@ -51,12 +72,12 @@ class Cart extends Component {
         <OrderSummary
           orders={this.props.orders}
           toAddQty={this.addQtyHandler}
-          toDeleteItem={this.decreaseQtyHandler}
-          toDecreseQty={this.deleteItemHandler}
+          toDecreseQty={this.decreaseQtyHandler}
+          toDeleteItem={this.deleteItemHandler}
         />
       </React.Fragment>
     )
   }
 }
 
-export default connect(mapStateToProps)(Cart)
+export default connect(mapStateToProps, mapDispatchToProps)(Cart)
