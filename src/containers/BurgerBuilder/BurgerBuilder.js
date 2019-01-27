@@ -9,33 +9,63 @@ import Order from '../../components/UI/Order/Order'
 import axiosInst from '../../axios-order'
 import Spinner from '../../components/UI/Spinner/Spinner'
 import errorWrapper from '../../hoc/errorWrapper/errorWrapper'
+import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { addToCart } from '../../store/actions'
+import { addToCart, updateTotal } from '../../store/actions'
 
-function mapDispatchToProps(dispatch) {
-  return ({
-    addToCart: order => dispatch(addToCart(order))
-  })
-}
+const mapStateToProps = ({loaded}) => ({
+  loaded
+})
+
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+  addToCart,
+  updateTotal
+}, dispatch)
 
 class BurgerBuilder extends Component {
 
   componentDidMount () {
     console.log('[component did mount]: BurgerBuilder')
     // if (this.state.ingredients || this.state.prices) return
-    this.setState({isLoading: true})
-    axiosInst.get('/ingredients.json')
+
+      this.setState({isLoading: true})
+      axiosInst.get('/ingredients.json')
+      .then(({data}) => {
+        this.setState({ingredients: data})
+        return axiosInst.get('/prices.json')
+      }).then(({data}) => {
+        this.setState({prices: data})
+        return axiosInst.get('/basePrice.json')
+      }).then(({data}) => {
+        this.setState({basePrice: data})
+        this.setState({isLoading: false})
+        this.updatePrice()
+      }).catch((error) => {
+        this.setState({hasPageError: true})
+        this.setState({isLoading: false})
+      })
+  }
+
+  addToCartHandler = () => {
+    this.setState({isloading: true})
+    axiosInst.get('https://uinames.com/api/?amount=1?maxleng=15?region=unitedstates')
     .then(({data}) => {
-      // this.props.addIngredients({ingredients: data})
-      this.setState({ingredients: data})
-      return axiosInst.get('/prices.json')
-    }).then(({data}) => {
-      this.setState({prices: data})
-      this.setState({isLoading: false})
-      this.updatePrice()
-    }).catch((error) => {
+      this.setState({burgerName: data.name})
+      this.props.addToCart(this.customBurger)
+      this.props.updateTotal()
+      return axiosInst.get('/ingredients.json')
+    })
+    .then(({data}) => {
+      this.setState({isAddedToCart: true})
+      setTimeout(() => {
+        this.setState({ingredients: data})
+        this.setState({isAddedToCart: false})
+      }, 750)
+      this.setState({isloading: false})
+    })
+    .catch((error) => {
       this.setState({hasPageError: true})
-      this.setState({isLoading: false})
+      this.setState({isloading: false})
     })
   }
 
@@ -88,7 +118,7 @@ class BurgerBuilder extends Component {
       return state.price =
         Object.keys(state.prices).reduce((price, key) => {
           return price += (state.prices[key] * state.ingredients[key])
-        }, this.state.basePrice)
+        }, state.basePrice)
     })
   }
 
@@ -103,7 +133,7 @@ class BurgerBuilder extends Component {
   }
 
   get customBurgerDesc () {
-    let str = 'Ingredient(s) addded to your custom burger: '
+    let str = 'Ingredient(s): '
     const i = {...this.state.ingredients}
     const _addedIngredients = Object.keys(i).reduce((all, key) => {
       if (i[key]) { all[key] = i[key] }
@@ -117,15 +147,11 @@ class BurgerBuilder extends Component {
 
   get customBurger () {
     return ({
-      title: 'Custom Burger',
+      title: `${this.state.burgerName} Custom Special`,
       desc: this.customBurgerDesc,
       price: this.state.price,
       qty: 1
     })
-  }
-
-  addToCartHandler = () => {
-    this.props.addToCart(this.customBurger)
   }
 
   state = {
@@ -133,12 +159,14 @@ class BurgerBuilder extends Component {
     controls: [
        'Bacon', 'Cheese', 'Meat', 'Veg'
     ],
+    burgerName: '',
     prices: null,
+    basePrice: null,
     price: null,
-    basePrice: 4,
     isModalOpen: false,
     isLoading: false,
-    hasPageError: false
+    hasPageError: false,
+    isAddedToCart: false,
   }
 
   render () {
@@ -164,8 +192,9 @@ class BurgerBuilder extends Component {
         </Modal>
         <div className={heading}>Build a Custom Burger</div>
         {
-          !this.state.ingredients || !this.state.prices ?
+          !this.state.ingredients ?
           <Spinner error={this.state.hasPageError} /> :
+          !this.state.isAddedToCart ?
           <React.Fragment>
             <div className={classes.content}>
               <Burger ingredients={this.state.ingredients} />
@@ -182,11 +211,15 @@ class BurgerBuilder extends Component {
               toAddToCart={this.addToCartHandler}
               price={this.state.price}
             />
-          </React.Fragment>
+          </React.Fragment> :
+          <Spinner
+            error={this.state.hasPageError}
+            isAdded={this.state.isAddedToCart}
+          />
         }
       </React.Fragment>
     )
   }
 }
 
-export default errorWrapper(connect(null, mapDispatchToProps)(BurgerBuilder), axiosInst)
+export default errorWrapper(connect(mapStateToProps, mapDispatchToProps)(BurgerBuilder), axiosInst)

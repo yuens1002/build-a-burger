@@ -11,7 +11,8 @@ const orderSummary = (props) => {
         <div className={classes.qty}>Qty. / Change Qty.</div>
         <div className={classes.deleteItem}>Delete</div>
       </article>
-      {props.orders.map((order, n) => {
+      {
+        props.orders.map((order, n) => {
         return (
           <OrderItem
           key={n}
@@ -20,7 +21,13 @@ const orderSummary = (props) => {
           toDeleteItem={() => props.toDeleteItem(n)}
           toDecreseQty={() => props.toDecreseQty(n)} />
         )
-      })}
+      })
+      }
+      {
+        props.total ? <article className={classes.total}>
+        <span className={classes.totalText}>Total $ </span>
+        {props.total.toFixed(2)}</article> : ''
+      }
     </React.Fragment>
   )
 }

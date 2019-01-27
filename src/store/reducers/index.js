@@ -2,53 +2,70 @@ import {
   ADD_TO_CART,
   INC_ITEM_QTY,
   DEC_ITEM_QTY,
-  DEL_ITEM
+  DEL_ITEM,
+  UPDATE_TOTAL,
+  UPDATE_LOADED
 } from '../constants/action-types'
 
 const initialState = {
   ingredients: null,
   prices: null,
+  total: null,
+  loaded: {
+    builder: false
+  },
   orders: []
 }
 
 function rootReducer (state = initialState, {type, payload}) {
-//   const obj = {
-//       [ADD_TO_CART]: () =>
-//         Object.assign({}, {...state}, {orders: [...state.orders].concat(payload)}),
-//       [INC_ITEM_QTY]: () => {
-//
-//       },
-//       [DEC_ITEM_QTY]: () => {
-//         const _orders = state.orders.map(({...order}) => order)
-//         _orders[payload].qty -= 1
-//         return Object.assign({}, {...state}, {orders: _orders})
-//       },
-//       [DEL_ITEM]: () => {
-//         const _orders = state.orders.map(({...order}) => order)
-//         const delOrder = _orders.splice(payload, 1)
-//         return Object.assign({}, {...state}, {orders: delOrder})
-//       }
-//     }
-//   return obj[type]()
-// }
 
-  if (type === ADD_TO_CART) {
-    return Object.assign({}, {...state}, {orders: [...state.orders].concat(payload)})
-  }
-  if (type === INC_ITEM_QTY) {
-    const _orders = state.orders.map(({...order}) => order)
-    _orders[payload].qty += 1
-    return Object.assign({}, {...state}, {orders: _orders})
-  }
-  if (type === DEC_ITEM_QTY) {
-    const _orders = state.orders.map(({...order}) => order)
-    _orders[payload].qty -= 1
-    return Object.assign({}, {...state}, {orders: _orders})
-  }
-  if (type === DEL_ITEM) {
-    const _orders = state.orders.map(({...order}) => order)
-    _orders.splice(payload, 1)
-    return Object.assign({}, {...state}, {orders: _orders})
+  const _orders = state.orders.map(({...order}) => order)
+
+  switch (type) {
+    case ADD_TO_CART :
+      return {
+        ...state,
+        orders: [...state.orders].concat(payload)
+      }
+    case INC_ITEM_QTY :
+      _orders[payload].qty += 1
+      return {
+        ...state,
+        orders: _orders
+      }
+    case DEC_ITEM_QTY :
+      _orders[payload].qty -= 1
+      return {
+        ...state,
+        orders: _orders
+      }
+    case DEL_ITEM :
+      _orders.splice(payload, 1)
+      return {
+        ...state,
+        orders: _orders
+      }
+    case UPDATE_TOTAL :
+      let _total = 0
+      _total = _orders.reduce((all, item) => {
+        return all + (item.price * item.qty)
+      }, _total)
+      return {
+        ...state,
+        total: _total
+      }
+    case UPDATE_LOADED :
+      console.log('loaded called')
+      return {
+        ...state,
+        loaded: (() => {
+          const _loaded = {...state.loaded}
+          _loaded[payload] = true
+          return _loaded
+        })()
+      }
+
+    default : return state
   }
 }
 export default rootReducer

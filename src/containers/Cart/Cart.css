@@ -1,0 +1,9 @@
+.checkout {
+  text-align: right
+}
+
+.empty {
+  padding: 1rem 0;
+  text-align: center;
+  border-bottom:  1px solid #eee;
+}

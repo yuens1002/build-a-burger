@@ -1,80 +1,61 @@
 import React, { Component } from 'react'
 import OrderSummary from '../../components/OrderSummary/OrderSummary'
+import Button from '../../components/UI/Button/Button'
 import { heading } from '../../index.css'
-import classes from './Cart.css'
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import classes from './Cart.css'
+import { incItemQty, decItemQty, delItem, updateTotal } from '../../store/actions'
+import { Link } from 'react-router-dom'
 
-import { incItemQty, decItemQty, delItem } from '../../store/actions'
+const mapStateToProps = ({orders, total}) => ({
+  orders,
+  total
+})
 
-function mapStateToProps (state) {
-  return {
-    orders: state.orders
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return ({
-    incItemQty: index => dispatch(incItemQty(index)),
-    decItemQty: index => dispatch(decItemQty(index)),
-    delItem: index => dispatch(delItem(index))
-  })
-}
+const mapDispatchToProps = dispatch => bindActionCreators({
+  incItemQty,
+  decItemQty,
+  delItem,
+  updateTotal
+}, dispatch)
 
 class Cart extends Component {
 
-  // componentDidMount () {
-  //   const query = new URLSearchParams(this.props.location.search)
-  //   const ingredients = {}
-  //   for (let param of query.entries()) {
-  //     ingredients[param[0]] = +param[1]
-  //   }
-  //
-  //   this.setState(state => {
-  //     const orders = [...state.orders]
-  //     orders.push({
-  //       ...ingredients,
-  //       name: 'Custom Burger',
-  //       qty: 1,
-  //       price: '4.50'
-  //     })
-  //     return {orders}
-  //   })
-  // }
-
-  // state = {
-  //   customIngredients: {
-  //     bacon: 0,
-  //     cheese: 0,
-  //     meat: 0,
-  //     veg: 0
-  //   },
-  //   orders: []
-  // }
-
-  addQtyHandler = (index) => {
+  addQtyHandler = index => {
     this.props.incItemQty(index)
+    this.props.updateTotal()
   }
 
-  decreaseQtyHandler = (index) => {
+  decreaseQtyHandler = index => {
     this.props.decItemQty(index)
+    this.props.updateTotal()
   }
 
-  deleteItemHandler = (index) => {
+  deleteItemHandler = index => {
     this.props.delItem(index)
+    this.props.updateTotal()
   }
-
-
 
   render () {
     return (
       <React.Fragment>
-        <div className={heading}>Shopping Bag</div>
+        <header className={heading}>Your Order</header>
         <OrderSummary
           orders={this.props.orders}
           toAddQty={this.addQtyHandler}
           toDecreseQty={this.decreaseQtyHandler}
           toDeleteItem={this.deleteItemHandler}
+          total={this.props.total}
         />
+        {
+          this.props.orders.length ?
+            <section className={classes.checkout}>
+              <Button type="primary" noMargin>CHECKOUT</Button>
+            </section> :
+          <section className={classes.empty}>Order is empty.
+            Try adding a Burger in <Link to="/builder">Burger Builder</Link></section>
+        }
       </React.Fragment>
     )
   }

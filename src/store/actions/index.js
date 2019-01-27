@@ -2,7 +2,9 @@ import {
   ADD_TO_CART,
   INC_ITEM_QTY,
   DEC_ITEM_QTY,
-  DEL_ITEM
+  DEL_ITEM,
+  UPDATE_TOTAL,
+  UPDATE_LOADED
 } from '../constants/action-types'
 
 export function addToCart(payload) {
@@ -19,4 +21,12 @@ export function decItemQty(payload) {
 
 export function delItem(payload) {
   return {type: DEL_ITEM, payload}
+}
+
+export function updateTotal(payload) {
+  return {type: UPDATE_TOTAL, payload}
+}
+
+export function updateLoaded(payload) {
+  return {type: UPDATE_LOADED, payload}
 }
