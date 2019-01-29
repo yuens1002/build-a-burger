@@ -1,5 +1,13 @@
 .checkout {
-  text-align: right
+  padding: 0.5rem 0;
+  display: flex;
+  justify-content: center;
+}
+
+@media (min-width: 1025px) {
+  .checkout {
+    justify-content: flex-end;
+  }
 }
 
 .empty {

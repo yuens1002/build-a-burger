@@ -4,7 +4,8 @@ import {
   DEC_ITEM_QTY,
   DEL_ITEM,
   UPDATE_TOTAL,
-  UPDATE_LOADED
+  UPDATE_LOADED,
+  UPDATE_CHECKOUT
 } from '../constants/action-types'
 
 export function addToCart(payload) {
@@ -29,4 +30,8 @@ export function updateTotal(payload) {
 
 export function updateLoaded(payload) {
   return {type: UPDATE_LOADED, payload}
+}
+
+export function updateCheckout(payload) {
+  return {type: UPDATE_CHECKOUT, payload}
 }

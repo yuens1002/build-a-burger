@@ -4,13 +4,15 @@ import {
   DEC_ITEM_QTY,
   DEL_ITEM,
   UPDATE_TOTAL,
-  UPDATE_LOADED
+  UPDATE_LOADED,
+  UPDATE_CHECKOUT
 } from '../constants/action-types'
 
 const initialState = {
   ingredients: null,
   prices: null,
   total: null,
+  isCheckingOut: false,
   loaded: {
     builder: false
   },
@@ -63,6 +65,11 @@ function rootReducer (state = initialState, {type, payload}) {
           _loaded[payload] = true
           return _loaded
         })()
+      }
+    case UPDATE_CHECKOUT :
+      return {
+        ...state,
+        isCheckingOut: payload
       }
 
     default : return state

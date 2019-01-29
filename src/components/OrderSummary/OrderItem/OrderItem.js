@@ -1,6 +1,12 @@
 import React from 'react'
 import Button from '../../UI/Button/Button'
-import { item, qty, desc, controls, price, deleteItem, unitPrice } from '../OrderSummary.css'
+import OrderItemControls from './OrderItemControls/OrderItemControls'
+import { item, qty, desc, controls, price, deleteItemOrTotal, unitPrice } from '../OrderSummary.css'
+import { connect } from 'react-redux'
+
+const mapStateToProps = ({isCheckingOut}) => ({
+  isCheckingOut
+})
 
 const orderItem = (props) => {
   return (
@@ -9,14 +15,23 @@ const orderItem = (props) => {
       <div className={unitPrice}>${props.order.price.toFixed(2)}</div>
       <div className={qty}>
         <Button noMargin type='smaller' disabled>{props.order.qty}</Button>
-        <Button type='smaller' clicked={props.toAddQty} disabled={props.order.qty >= 9}>+</Button>
-        <Button noMargin type='smaller' clicked={props.toDecreseQty} disabled={props.order.qty <= 1}>-</Button>
+        {
+          !props.isCheckingOut && <OrderItemControls
+            toAddQty={props.toAddQty}
+            orderQty={props.order.qty}
+            toDecreaseQty={props.toDecreaseQty}
+          />
+        }
       </div>
-      <div className={deleteItem}>
-        <Button noMargin type='del' clicked={props.toDeleteItem}>x</Button>
+      <div className={deleteItemOrTotal}>
+        {
+          props.isCheckingOut ?
+            `$${(props.order.qty * props.order.price).toFixed(2)}` :
+          <Button noMargin type='del' clicked={props.toDeleteItem}>x</Button>
+        }
       </div>
     </article>
   )
 }
 
-export default orderItem
+export default connect(mapStateToProps)(orderItem)

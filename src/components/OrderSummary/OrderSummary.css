@@ -29,23 +29,28 @@
   color: #ccc;
 }
 
+.action {
+  text-align: center;
+}
+
 @media (min-width: 1025px) {
   .item.header {
     display: flex;
   }
-  .total {
+  .total, .action {
     text-align: right;
   }
   .item {
     display: flex;
     align-items: center;
   }
-  .price, .unitPrice, .deleteItem {
+  .price, .unitPrice, .deleteItemOrTotal {
     text-align: center;
   }
   .qty {
     width: 15%;
     display: flex;
+    justify-content: center;
   }
   .desc {
     width: 60%;
@@ -58,7 +63,7 @@
   .unitPrice {
     width: 15%;
   }
-  .deleteItem {
+  .deleteItemOrTotal {
     width: 10%;
   }
 }

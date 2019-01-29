@@ -1,4 +1,4 @@
-.button {
+.button, input[type=submit] {
   padding: 0.75rem 1.5rem;
   margin: 0 0.5rem;
   outline: none;
@@ -11,7 +11,7 @@
 }
 
 .noMargin {
-  margin: 0;
+  margin: 0 !important;
 }
 
 .larger {
@@ -28,7 +28,7 @@
 }
 
 .primary {
-  background: blue;
+  background: blue !important;
   color: white;
   font-weight: normal;
 }
