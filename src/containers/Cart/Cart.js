@@ -8,9 +8,11 @@ import { bindActionCreators } from 'redux'
 import classes from './Cart.css'
 import { incItemQty, decItemQty, delItem, updateTotal, updateCheckout } from '../../store/actions'
 import { Link } from 'react-router-dom'
+import axiosInst from '../../axios-order'
+import errorWrapper from '../../hoc/errorWrapper/errorWrapper'
 
-const mapStateToProps = ( {orders, total, isCheckingOut} ) => ({
-  orders,
+const mapStateToProps = ( {cart, total, isCheckingOut} ) => ({
+  cart,
   total,
   isCheckingOut
 })
@@ -25,8 +27,33 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 
 class Cart extends Component {
 
-  placeOrderHandler = (e) => {
-    console.log('form submitted')
+  placeOrderHandler = () => {
+    this.setState({isLoading: true})
+    Promise.all([
+      axiosInst.get('/prices.json'),
+      axiosInst.get('./basePrice.json')
+    ]).then(([prices, basePrice]) => {
+      const _total = this.props.cart.reduce((total, item) => {
+        return ((Object.keys(prices.data).reduce((subTotal, ingKey) => {
+          return subTotal += (item.ingredients[ingKey] * prices.data[ingKey])
+        }, 0) + basePrice.data) * item.qty) + total
+      }, 0)
+      const _order = {
+        customer: this.state.customer,
+        price: _total,
+        order: this.props.cart
+      }
+      /*****firebase *****************
+      xxx.json for firebase only
+      xxx.json, path/to/record
+      ********************************/
+      axiosInst.post('/orders.json', _order)
+    }).then(response => {
+        this.setState({isLoading: false})
+      }).catch((pricesError, basePriceError) => {
+        this.setState({hasPageError: true})
+        this.setState({isLoading: false})
+      })
   }
 
   checkoutHandler = () => {
@@ -52,12 +79,32 @@ class Cart extends Component {
     this.props.updateTotal()
   }
 
+  inputHandler = ({value, name}) => {
+    let _customer = {...this.state.customer}
+    _customer[name] = value
+    this.setState({customer: _customer})
+  }
+
+  state = {
+    customer: {
+      name: '',
+      phone: '',
+      address: '',
+      city: '',
+      state: '',
+      zipcode: '',
+      email: ''
+    },
+    isLoading: false,
+    hasPageError: false
+  }
+
   render () {
     return (
       <React.Fragment>
         <header className={heading}>Your Order</header>
         <OrderSummary
-          orders={this.props.orders}
+          cart={this.props.cart}
           toAddQty={this.addQtyHandler}
           toDecreaseQty={this.decreaseQtyHandler}
           toDeleteItem={this.deleteItemHandler}
@@ -66,9 +113,9 @@ class Cart extends Component {
           toCheckout={this.checkoutHandler}
           toEditOrder={this.backToCartHandler}
         />
-        { this.props.isCheckingOut && <OrderForm /> }
+        { this.props.isCheckingOut && <OrderForm toCaptureInput={this.inputHandler}/> }
         {
-          this.props.orders.length ?
+          this.props.cart.length ?
             <section className={classes.checkout}>
               {
                 this.props.isCheckingOut &&
@@ -83,4 +130,4 @@ class Cart extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Cart)
+export default errorWrapper(connect(mapStateToProps, mapDispatchToProps)(Cart), axiosInst)

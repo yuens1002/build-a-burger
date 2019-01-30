@@ -8,11 +8,16 @@
   opacity: 1;
 }
 
+.formControl {
+  padding-top: 2rem;
+}
+
 .formControl label, .formControl input {
   font-size: 1.2rem;
   border: none;
   outline: none;
   margin-bottom: 0.75rem;
+
 }
 
 .formControl label {
@@ -21,7 +26,8 @@
   white-space: nowrap;
 }
 
-.formControl input:not([type=submit]) {
+.formControl input {
+  color: #666;
   border-radius: 3px;
   background-color: rgba(0,0,0,0.05);
   padding: 0.75rem;
@@ -29,11 +35,14 @@
   width: 100%;
 }
 
-.formControl input:not([type=submit]):focus {
-  background-color: rgba(0,0,0,0.35);
+.formControl input:focus {
+  background-color: rgba(0,0,0,0.25);
 }
 
 @media (min-width: 1025px) {
+  .fromControl {
+    padding-top: 0;
+  }
   .row {
     display: flex;
     justify-content: space-between;

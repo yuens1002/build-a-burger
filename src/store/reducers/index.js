@@ -16,40 +16,40 @@ const initialState = {
   loaded: {
     builder: false
   },
-  orders: []
+  cart: []
 }
 
 function rootReducer (state = initialState, {type, payload}) {
 
-  const _orders = state.orders.map(({...order}) => order)
+  const _cart = state.cart.map(({...item}) => item)
 
   switch (type) {
     case ADD_TO_CART :
       return {
         ...state,
-        orders: [...state.orders].concat(payload)
+        cart: [...state.cart].concat(payload)
       }
     case INC_ITEM_QTY :
-      _orders[payload].qty += 1
+      _cart[payload].qty += 1
       return {
         ...state,
-        orders: _orders
+        cart: _cart
       }
     case DEC_ITEM_QTY :
-      _orders[payload].qty -= 1
+      _cart[payload].qty -= 1
       return {
         ...state,
-        orders: _orders
+        cart: _cart
       }
     case DEL_ITEM :
-      _orders.splice(payload, 1)
+      _cart.splice(payload, 1)
       return {
         ...state,
-        orders: _orders
+        cart: _cart
       }
     case UPDATE_TOTAL :
       let _total = 0
-      _total = _orders.reduce((all, item) => {
+      _total = _cart.reduce((all, item) => {
         return all + (item.price * item.qty)
       }, _total)
       return {

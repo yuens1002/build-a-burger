@@ -48,7 +48,7 @@ class BurgerBuilder extends Component {
 
   addToCartHandler = () => {
     this.setState({isloading: true})
-    axiosInst.get('https://uinames.com/api/?amount=1?maxleng=15?region=unitedstates')
+    axiosInst.get('https://uinames.com/api/?amount=1?maxleng=15')
     .then(({data}) => {
       this.setState({burgerName: data.name})
       this.props.addToCart(this.customBurger)
@@ -87,7 +87,7 @@ class BurgerBuilder extends Component {
     // xxx.json for firebase only
     // xxx.json, path/to/record
     // ********************************/
-    // axiosInst.post('/orders.json', order)
+    // axiosInst.post('/cart.json', order)
     // .then(response => {
     //   this.setState({isLoading: false})
     //   this.toggleModalHandler()
@@ -149,6 +149,7 @@ class BurgerBuilder extends Component {
     return ({
       title: `${this.state.burgerName} Custom Special`,
       desc: this.customBurgerDesc,
+      ingredients: this.state.ingredients,
       price: this.state.price,
       qty: 1
     })

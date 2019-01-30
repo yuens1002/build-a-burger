@@ -13,7 +13,7 @@ const orderSummary = (props) => {
         <div className={classes.deleteItemOrTotal}>{props.isCheckingOut ? 'Total' : 'Delete'}</div>
       </article>
       {
-        props.orders.map((order, n) => {
+        props.cart.map((order, n) => {
           return (
             <OrderItem
             key={n}
@@ -25,12 +25,12 @@ const orderSummary = (props) => {
         })
       }
       {
-        props.orders.length ? <article className={classes.total}>
+        props.cart.length ? <article className={classes.total}>
         <span className={classes.totalText}>Total $ </span>
         {props.total.toFixed(2)}</article> : ''
       }
       {
-        props.orders.length ?
+        props.cart.length ?
           props.isCheckingOut ? <article className={classes.action}><Button noMargin clicked={props.toEditOrder}>EDIT ORDER</Button></article> :
         <article className={classes.action}><Button type="primary" noMargin clicked={props.toCheckout}>CHECKOUT</Button></article> : ''
       }
