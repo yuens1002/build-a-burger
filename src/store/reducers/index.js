@@ -5,7 +5,8 @@ import {
   DEL_ITEM,
   UPDATE_TOTAL,
   UPDATE_LOADED,
-  UPDATE_CHECKOUT
+  UPDATE_CHECKOUT,
+  RESET_CART
 } from '../constants/action-types'
 
 const initialState = {
@@ -71,7 +72,12 @@ function rootReducer (state = initialState, {type, payload}) {
         ...state,
         isCheckingOut: payload
       }
-
+    case RESET_CART :
+      console.log('reset')
+      return {
+        ...state,
+        cart: []
+      }
     default : return state
   }
 }

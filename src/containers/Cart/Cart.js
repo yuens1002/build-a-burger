@@ -6,10 +6,11 @@ import { heading } from '../../index.css'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import classes from './Cart.css'
-import { incItemQty, decItemQty, delItem, updateTotal, updateCheckout } from '../../store/actions'
+import { incItemQty, decItemQty, delItem, updateTotal, updateCheckout, resetCart } from '../../store/actions'
 import { Link } from 'react-router-dom'
 import axiosInst from '../../axios-order'
 import errorWrapper from '../../hoc/errorWrapper/errorWrapper'
+import Spinner from '../../components/UI/Spinner/Spinner'
 
 const mapStateToProps = ( {cart, total, isCheckingOut} ) => ({
   cart,
@@ -22,7 +23,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   decItemQty,
   delItem,
   updateTotal,
-  updateCheckout
+  updateCheckout,
+  resetCart
 }, dispatch)
 
 class Cart extends Component {
@@ -49,11 +51,20 @@ class Cart extends Component {
       ********************************/
       axiosInst.post('/orders.json', _order)
     }).then(response => {
-        this.setState({isLoading: false})
+        this.successOrderHandler()
       }).catch((pricesError, basePriceError) => {
         this.setState({hasPageError: true})
         this.setState({isLoading: false})
       })
+  }
+
+  successOrderHandler = () => {
+    setTimeout(() => {
+      this.setState({isLoading: false})
+      this.props.updateCheckout(false)
+      this.props.resetCart()
+      this.props.updateTotal()
+    }, 5000)
   }
 
   checkoutHandler = () => {
@@ -79,6 +90,12 @@ class Cart extends Component {
     this.props.updateTotal()
   }
 
+  resetCartHandler = () => {
+    console.log('resetCartHandler called')
+    this.props.resetCart()
+    this.props.updateTotal()
+  }
+
   inputHandler = ({value, name}) => {
     let _customer = {...this.state.customer}
     _customer[name] = value
@@ -96,13 +113,14 @@ class Cart extends Component {
       email: ''
     },
     isLoading: false,
-    hasPageError: false
+    hasPageError: false,
   }
 
   render () {
     return (
       <React.Fragment>
         <header className={heading}>Your Order</header>
+        {this.state.isLoading && <Spinner type="success" />}
         <OrderSummary
           cart={this.props.cart}
           toAddQty={this.addQtyHandler}

@@ -3,8 +3,6 @@ import classes from './BurgerBuilder.css'
 import { overFlowHidden, heading } from '../../index.css'
 import Burger from '../../components/Burger/Burger'
 import Controls from '../../components/Controls/Controls'
-import Modal from '../../components/Modal/Modal'
-import OrderDetails from '../../components/OrderDetails/OrderDetails'
 import Order from '../../components/UI/Order/Order'
 import axiosInst from '../../axios-order'
 import Spinner from '../../components/UI/Spinner/Spinner'
@@ -27,8 +25,7 @@ class BurgerBuilder extends Component {
   componentDidMount () {
     console.log('[component did mount]: BurgerBuilder')
     // if (this.state.ingredients || this.state.prices) return
-
-      this.setState({isLoading: true})
+      // this.setState({isLoading: {...this.state.isLoading, state: true}})
       axiosInst.get('/ingredients.json')
       .then(({data}) => {
         this.setState({ingredients: data})
@@ -38,73 +35,35 @@ class BurgerBuilder extends Component {
         return axiosInst.get('/basePrice.json')
       }).then(({data}) => {
         this.setState({basePrice: data})
-        this.setState({isLoading: false})
         this.updatePrice()
+        setTimeout(() => {
+          this.setState({isLoading: {...this.state.isLoading, state: false}})
+        }, 500)
       }).catch((error) => {
-        this.setState({hasPageError: true})
-        this.setState({isLoading: false})
+        this.setState({hasPageError: {...this.state.hasPageError, state: true}})
       })
   }
 
   addToCartHandler = () => {
-    this.setState({isloading: true})
     axiosInst.get('https://uinames.com/api/?amount=1?maxleng=15')
     .then(({data}) => {
       this.setState({burgerName: data.name})
-      this.props.addToCart(this.customBurger)
-      this.props.updateTotal()
       return axiosInst.get('/ingredients.json')
     })
     .then(({data}) => {
-      this.setState({isAddedToCart: true})
+      this.setState({isAddedToCart: {...this.state.isAddedToCart, state: true}})
+      this.props.addToCart(this.customBurger)
+      this.props.updateTotal()
       setTimeout(() => {
         this.setState({ingredients: data})
-        this.setState({isAddedToCart: false})
-      }, 750)
-      this.setState({isloading: false})
+        this.setState({isAddedToCart: {...this.state.isAddedToCart, state: false}})
+      }, 900)
     })
     .catch((error) => {
-      this.setState({hasPageError: true})
-      this.setState({isloading: false})
+      this.setState({hasPageError: {...this.state.hasPageError, state: true}})
     })
   }
 
-  orderHandler = () => {
-    // this.setState({isLoading: true})
-    // const order = {
-    //   ingredients: this.state.ingredients,
-    //   price: this.state.totalPrice,
-    //   customer: {
-    //     name: 'Sunny Yuen',
-    //     address: 'Test Address',
-    //     zipcode: 11122,
-    //     country: 'US'
-    //   },
-    //   email: 'test@gmail.com',
-    //   delivery: 'fastest'
-    // }
-    // /*****firebase *****************
-    // xxx.json for firebase only
-    // xxx.json, path/to/record
-    // ********************************/
-    // axiosInst.post('/cart.json', order)
-    // .then(response => {
-    //   this.setState({isLoading: false})
-    //   this.toggleModalHandler()
-    // })
-    const queryParams = []
-    for (let key in this.state.ingredients) {
-      if (this.state.ingredients[key]) {
-        queryParams.push(
-          `&${encodeURIComponent(key)}=${encodeURIComponent(this.state.ingredients[key])}`
-        )
-      }
-    }
-    this.props.history.push({
-      pathname: '/bag',
-      search: queryParams.join('')
-    })
-  }
   updateIngredientHandler = (igName, changeType) => {
     this.setState(state => {
       const _ig = {...state.ingredients}
@@ -126,12 +85,6 @@ class BurgerBuilder extends Component {
     document.body.classList.toggle(overFlowHidden)
   }
 
-  toggleModalHandler = () => {
-    this.toggleOverFlowClass()
-    const _modalOpen = this.state.isModalOpen
-    return this.setState({isModalOpen : !_modalOpen})
-  }
-
   get customBurgerDesc () {
     let str = 'Ingredient(s): '
     const i = {...this.state.ingredients}
@@ -147,12 +100,16 @@ class BurgerBuilder extends Component {
 
   get customBurger () {
     return ({
-      title: `${this.state.burgerName} Custom Special`,
+      title: `${this.state.burgerName} Custom Burger`,
       desc: this.customBurgerDesc,
       ingredients: this.state.ingredients,
       price: this.state.price,
       qty: 1
     })
+  }
+
+  get spinnerType () {
+    return [this.state.isLoading, this.state.hasPageError, this.state.isAddedToCart].filter(process => !!process.state)[0].spinner
   }
 
   state = {
@@ -165,37 +122,29 @@ class BurgerBuilder extends Component {
     basePrice: null,
     price: null,
     isModalOpen: false,
-    isLoading: false,
-    hasPageError: false,
-    isAddedToCart: false,
+    isLoading: {
+      state: true,
+      spinner: 'loading'
+    },
+    hasPageError: {
+      state: false,
+      spinner: 'error'
+    },
+    isAddedToCart: {
+      state: false,
+      spinner: 'added'
+    }
   }
-
+  //Modal is no
   render () {
     return (
       <React.Fragment>
-        <Modal
-          toCloseModal={this.toggleModalHandler}
-          isModalOpen={this.state.isModalOpen}
-          isLoading={this.state.isLoading}
-        >
-          {
-            this.state.isLoading ?
-            <Spinner error={this.state.hasPageError} /> :
-            !this.state.ingredients || !this.state.prices ? '' :
-            <OrderDetails
-              toggleModal={this.toggleModalHandler}
-              prices={this.state.prices}
-              price={this.state.price}
-              ingredients={this.state.ingredients}
-              toPlaceOrder={this.orderHandler}
-            />
-          }
-        </Modal>
         <div className={heading}>Build a Custom Burger</div>
         {
-          !this.state.ingredients ?
-          <Spinner error={this.state.hasPageError} /> :
-          !this.state.isAddedToCart ?
+          this.state.isLoading.state || this.state.isAddedToCart.state || this.state.hasPageError.state ?
+            <Spinner
+              type={this.spinnerType}
+            /> :
           <React.Fragment>
             <div className={classes.content}>
               <Burger ingredients={this.state.ingredients} />
@@ -212,11 +161,7 @@ class BurgerBuilder extends Component {
               toAddToCart={this.addToCartHandler}
               price={this.state.price}
             />
-          </React.Fragment> :
-          <Spinner
-            error={this.state.hasPageError}
-            isAdded={this.state.isAddedToCart}
-          />
+          </React.Fragment>
         }
       </React.Fragment>
     )
