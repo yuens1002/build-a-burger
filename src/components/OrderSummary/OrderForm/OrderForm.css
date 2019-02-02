@@ -1,0 +1,59 @@
+.action {
+  padding: 1rem 0;
+  text-align: center;
+}
+
+.formControl ::placeholder {
+  color: #ccc;
+  opacity: 1;
+}
+
+.formControl {
+  padding-top: 2rem;
+}
+
+.formControl label, .formControl input {
+  font-size: 1.2rem;
+  border: none;
+  outline: none;
+  margin-bottom: 0.75rem;
+
+}
+
+.formControl label {
+  display: block;
+  margin-right: 0.5rem;
+  white-space: nowrap;
+}
+
+.formControl input {
+  color: #666;
+  border-radius: 3px;
+  background-color: rgba(0,0,0,0.05);
+  padding: 0.75rem;
+  transition: background-color 0.5s ease;
+  width: 100%;
+}
+
+.formControl input:focus {
+  background-color: rgba(0,0,0,0.25);
+}
+
+@media (min-width: 1025px) {
+  .fromControl {
+    padding-top: 0;
+  }
+  .row {
+    display: flex;
+    justify-content: space-between;
+  }
+  .row div {
+    flex: 1 auto
+  }
+  .row div:not(:first-of-type) {
+    margin-left: 1rem;
+  }
+  .action {
+    text-align: right;
+  }
+}

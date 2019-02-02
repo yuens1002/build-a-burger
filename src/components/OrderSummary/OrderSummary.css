@@ -1,3 +1,7 @@
+.qty, .desc, .controls, .price, .total {
+  width: 100%
+}
+
 .item {
   display: block;
   border-bottom: 1px solid #eee;
@@ -13,24 +17,40 @@
   color: #ccc;
 }
 
-.qty, .desc, .controls, .price {
-  width: 100%
+.total {
+  font-size: 1.5rem;
+  padding: 1rem 0;
+  font-weight: bold;
+  text-align: center;
+}
+
+.totalText {
+  font-size: .8rem;
+  color: #ccc;
+}
+
+.action {
+  text-align: center;
 }
 
 @media (min-width: 1025px) {
   .item.header {
     display: flex;
   }
+  .total, .action {
+    text-align: right;
+  }
   .item {
     display: flex;
     align-items: center;
   }
-  .price, .unitPrice, .deleteItem {
+  .price, .unitPrice, .deleteItemOrTotal {
     text-align: center;
   }
   .qty {
     width: 15%;
     display: flex;
+    justify-content: center;
   }
   .desc {
     width: 60%;
@@ -43,7 +63,7 @@
   .unitPrice {
     width: 15%;
   }
-  .deleteItem {
+  .deleteItemOrTotal {
     width: 10%;
   }
 }

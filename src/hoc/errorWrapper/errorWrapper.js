@@ -9,15 +9,13 @@ const errorWrapper = (WrappedComponent, AxiosInst) => {
     state = {
       error: null
     }
-
     componentWillUnmount () {
-      console.log('[component Will UnMount]: errorWrapper')
+      //should cancel all subscriptions and async tasks... here also
       AxiosInst.interceptors.response.eject(this.resInterceptor)
       AxiosInst.interceptors.request.eject(this.reqInterceptor)
     }
 
     componentWillMount () {
-      console.log('[component Will Mount]: errorWrapper')
       this.reqInterceptor = AxiosInst.interceptors.request.use(req => {
         this.setState({error: null})
         return req
@@ -28,11 +26,9 @@ const errorWrapper = (WrappedComponent, AxiosInst) => {
         this.setState({error: error.message})
       })
     }
-
     closeModalHandler = () => {
       this.setState({error: null})
     }
-
     render () {
       return (
         <Aux>
