@@ -5,7 +5,7 @@ const messages = {
   error: 'Error: Process can not contintue',
   loading: 'Page is loading...',
   added: 'Burger Added',
-  success: 'Thank you for your order. Page rests in 5s'
+  success: 'Thank you for your order. Page will reset in 5s'
 }
 
 const getText = (type) => {
