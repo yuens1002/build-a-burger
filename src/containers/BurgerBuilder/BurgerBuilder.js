@@ -53,9 +53,9 @@ class BurgerBuilder extends Component {
     .then(({data}) => {
       this.setState({isAddedToCart: {...this.state.isAddedToCart, state: true}})
       this.props.addToCart(this.customBurger)
-      this.props.updateTotal()
       setTimeout(() => {
         this.setState({ingredients: data})
+        this.updatePrice()
         this.setState({isAddedToCart: {...this.state.isAddedToCart, state: false}})
       }, 900)
     })
