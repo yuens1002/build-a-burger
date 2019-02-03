@@ -4,7 +4,7 @@ import Button from '../../UI/Button/Button'
 
 const order = (props) => (
   <div className={classes.container}>
-    <div className={classes.price}>{`$${props.price}`}</div>
+    <div className={classes.price}>{`$${props.price.toFixed(2)}`}</div>
     <Button type="primary" noMargin clicked={props.toAddToCart}>ADD TO ORDER</Button>
   </div>
 )

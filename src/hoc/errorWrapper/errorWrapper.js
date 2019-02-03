@@ -7,7 +7,8 @@ const errorWrapper = (WrappedComponent, AxiosInst) => {
   return class extends Component {
 
     state = {
-      error: null
+      isOpened: false,
+      error: ''
     }
     componentWillUnmount () {
       //should cancel all subscriptions and async tasks... here also
@@ -17,23 +18,27 @@ const errorWrapper = (WrappedComponent, AxiosInst) => {
 
     componentWillMount () {
       this.reqInterceptor = AxiosInst.interceptors.request.use(req => {
-        this.setState({error: null})
+        this.setState({error: null, isOpened: false})
+        console.log(req)
+
         return req
       })
       this.resInterceptor = AxiosInst.interceptors.response.use(res => {
+        console.log(res)
         return res
       }, error => {
-        this.setState({error: error.message})
+
+        this.setState({error: error.message, isOpened: true})
       })
     }
     closeModalHandler = () => {
-      this.setState({error: null})
+      this.setState({error: null, isOpened: false})
     }
     render () {
       return (
         <Aux>
           <Modal
-            isModalOpen={this.state.error}
+            isModalOpen={this.state.isOpened}
             toCloseModal={this.closeModalHandler}
           >
             <ErrorMsg toCloseModal={this.closeModalHandler}>
