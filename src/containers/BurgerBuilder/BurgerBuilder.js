@@ -9,45 +9,41 @@ import Spinner from '../../components/UI/Spinner/Spinner'
 import errorWrapper from '../../hoc/errorWrapper/errorWrapper'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { addToCart, updateTotal } from '../../store/actions'
-
-const mapStateToProps = ({loaded}) => ({
-  loaded
-})
+import * as actions from '../../store/actions'
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  addToCart,
-  updateTotal
+  ...actions
 }, dispatch)
+
+const mapStateToProps = ({
+  hasPageError,
+  prices,
+  ingredients,
+  customBurgerName,
+  price,
+  isLoading
+}) => ({
+  hasPageError,
+  prices,
+  ingredients,
+  customBurgerName,
+  price,
+  isLoading
+})
+
+
 
 class BurgerBuilder extends Component {
 
   componentDidMount () {
     console.log('[component did mount]: BurgerBuilder')
-    // if (this.state.ingredients || this.state.prices) return
-      // this.setState({isLoading: {...this.state.isLoading, state: true}})
-      axiosInst.get('/ingredients.json')
-      .then(({data}) => {
-        this.setState({ingredients: data})
-        return axiosInst.get('/prices.json')
-      }).then(({data}) => {
-        this.setState({prices: data})
-        return axiosInst.get('/basePrice.json')
-      }).then(({data}) => {
-        this.setState({basePrice: data})
-        this.updatePrice()
-        setTimeout(() => {
-          this.setState({isLoading: {...this.state.isLoading, state: false}})
-        }, 500)
-      }).catch((error) => {
-        this.setState({hasPageError: {...this.state.hasPageError, state: true}})
-      })
+    !this.props.ingredients && this.props.initIngredients()
   }
 
   addToCartHandler = () => {
     axiosInst.get('https://uinames.com/api/?amount=1?maxleng=15')
     .then(({data}) => {
-      this.setState({burgerName: data.name})
+      this.setState({customBurgerName: data.name})
       return axiosInst.get('/ingredients.json')
     })
     .then(({data}) => {
@@ -60,25 +56,15 @@ class BurgerBuilder extends Component {
       }, 900)
     })
     .catch((error) => {
-      this.setState({hasPageError: {...this.state.hasPageError, state: true}})
+      // this.setState({hasPageError: {...this.state.hasPageError, state: true}})
     })
   }
 
   updateIngredientHandler = (igName, changeType) => {
-    this.setState(state => {
-      const _ig = {...state.ingredients}
-      changeType ? ++_ig[igName] : --_ig[igName]
-      return ({ingredients: _ig})
-    })
-    this.updatePrice()
-  }
-  updatePrice = () => {
-    this.setState(state => {
-      return state.price =
-        Object.keys(state.prices).reduce((price, key) => {
-          return price += (state.prices[key] * state.ingredients[key])
-        }, state.basePrice)
-    })
+    const _ig = {...this.props.ingredients}
+    changeType ? ++_ig[igName] : --_ig[igName]
+    this.props.setProp({prop: 'ingredients', val: _ig})
+    this.props.updatePrice()
   }
 
   toggleOverFlowClass = () => {
@@ -87,7 +73,7 @@ class BurgerBuilder extends Component {
 
   get customBurgerDesc () {
     let str = 'Ingredient(s): '
-    const i = {...this.state.ingredients}
+    const i = {...this.props.ingredients}
     const _addedIngredients = Object.keys(i).reduce((all, key) => {
       if (i[key]) { all[key] = i[key] }
       return all
@@ -100,36 +86,37 @@ class BurgerBuilder extends Component {
 
   get customBurger () {
     return ({
-      title: `${this.state.burgerName} Custom Burger`,
+      title: `${this.state.customBurgerName} Custom Burger`,
       desc: this.customBurgerDesc,
-      ingredients: this.state.ingredients,
-      price: this.state.price,
+      ingredients: this.props.ingredients,
+      price: this.props.price,
       qty: 1
     })
   }
 
   get spinnerType () {
-    return [this.state.isLoading, this.state.hasPageError, this.state.isAddedToCart].filter(process => !!process.state)[0].spinner
+    return [this.props.isLoading,
+      this.props.hasPageError.state,
+      this.state.isAddedToCart
+    ].filter(process => !!process.state)[0].spinner
   }
 
   state = {
-    ingredients: null,
     controls: [
        'Bacon', 'Cheese', 'Meat', 'Veg'
     ],
-    burgerName: '',
-    prices: null,
-    basePrice: null,
-    price: null,
-    isModalOpen: false,
-    isLoading: {
-      state: true,
-      spinner: 'loading'
-    },
-    hasPageError: {
-      state: false,
-      spinner: 'error'
-    },
+    // prices: null,
+    // basePrice: null,
+    // price: null,
+    // isModalOpen: false,
+    // isLoading: {
+    //   state: true,
+    //   spinner: 'loading'
+    // },
+    // hasPageError: {
+    //   state: false,
+    //   spinner: 'error'
+    // },
     isAddedToCart: {
       state: false,
       spinner: 'added'
@@ -141,25 +128,25 @@ class BurgerBuilder extends Component {
       <React.Fragment>
         <div className={heading}>Build a Custom Burger</div>
         {
-          this.state.isLoading.state || this.state.isAddedToCart.state || this.state.hasPageError.state ?
+          this.props.isLoading.state || this.state.isAddedToCart.state || this.props.hasPageError.state ?
             <Spinner
               type={this.spinnerType}
             /> :
           <React.Fragment>
             <div className={classes.content}>
-              <Burger ingredients={this.state.ingredients} />
+              <Burger ingredients={this.props.ingredients} />
               <div className={classes.controls}>
                 <Controls
                   updateIngredient={this.updateIngredientHandler}
                   controls={this.state.controls}
-                  ingredients={this.state.ingredients}
-                  price={this.state.price}
+                  ingredients={this.props.ingredients}
+                  price={this.props.price}
                   toggleModal={this.toggleModalHandler} />
               </div>
             </div>
             <Order
               toAddToCart={this.addToCartHandler}
-              price={this.state.price}
+              price={this.props.price}
             />
           </React.Fragment>
         }

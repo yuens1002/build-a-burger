@@ -6,16 +6,30 @@ import {
   UPDATE_TOTAL,
   UPDATE_LOADED,
   UPDATE_CHECKOUT,
-  RESET_CART
+  RESET_CART,
+  SET_INGREDIENTS,
+  SET_HAS_PAGE_ERROR,
+  SET_PROP,
+  UPDATE_PRICE,
+  UPDATE_IS_LOADING,
 } from '../constants/action-types'
 
 const initialState = {
   ingredients: null,
-  prices: null,
-  total: null,
+  prices: {},
+  price: 0,
+  total: 0,
   isCheckingOut: false,
-  loaded: {
-    builder: false
+  customBurgerName: '',
+  basePrice: 0,
+  hasPageError: {
+    state: false,
+    spinner: 'error',
+    msg: ''
+  },
+  isLoading: {
+    state: true,
+    spinner: 'loading'
   },
   cart: []
 }
@@ -58,7 +72,6 @@ function rootReducer (state = initialState, {type, payload}) {
         total: _total
       }
     case UPDATE_LOADED :
-      console.log('loaded called')
       return {
         ...state,
         loaded: (() => {
@@ -77,6 +90,37 @@ function rootReducer (state = initialState, {type, payload}) {
       return {
         ...state,
         cart: []
+      }
+    case SET_INGREDIENTS :
+      return {
+        ...state,
+        ingredients: payload,
+        hasPageError: {
+          ...state.hasPageError,
+          state: false
+        }
+      }
+    case SET_HAS_PAGE_ERROR :
+      return {
+        ...state,
+        hasPageError: {...state.hasPageError, state: true, msg: payload}
+      }
+    case UPDATE_IS_LOADING :
+      return {
+        ...state,
+        isLoading: {...state.isLoading, state: payload}
+      }
+    case SET_PROP:
+      return {
+        ...state,
+        [payload.prop]: payload.val
+      }
+    case UPDATE_PRICE:
+      return {
+        ...state,
+        price: Object.keys(state.prices).reduce((price, key) => {
+          return price += (state.prices[key] * state.ingredients[key])
+        }, state.basePrice)
       }
     default : return state
   }

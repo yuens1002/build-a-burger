@@ -4,6 +4,7 @@ import Button from '../UI/Button/Button'
 import classes from './OrderSummary.css'
 
 const orderSummary = (props) => {
+  
   return (
     <React.Fragment>
       <article className={[classes.item, classes.header].join(' ')}>
