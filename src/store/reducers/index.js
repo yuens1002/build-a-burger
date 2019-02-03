@@ -4,14 +4,14 @@ import {
   DEC_ITEM_QTY,
   DEL_ITEM,
   UPDATE_TOTAL,
-  UPDATE_LOADED,
+  // UPDATE_LOADED,
   UPDATE_CHECKOUT,
   RESET_CART,
   SET_INGREDIENTS,
   SET_HAS_PAGE_ERROR,
   SET_PROP,
   UPDATE_PRICE,
-  UPDATE_IS_LOADING,
+  UPDATE_STATUS,
 } from '../constants/action-types'
 
 const initialState = {
@@ -31,6 +31,10 @@ const initialState = {
     state: true,
     spinner: 'loading'
   },
+  isAddedToCart: {
+    state: false,
+    spinner: 'added'
+  },
   cart: []
 }
 
@@ -42,7 +46,7 @@ function rootReducer (state = initialState, {type, payload}) {
     case ADD_TO_CART :
       return {
         ...state,
-        cart: [...state.cart].concat(payload)
+        cart: [...state.cart].concat(payload())
       }
     case INC_ITEM_QTY :
       _cart[payload].qty += 1
@@ -71,15 +75,6 @@ function rootReducer (state = initialState, {type, payload}) {
         ...state,
         total: _total
       }
-    case UPDATE_LOADED :
-      return {
-        ...state,
-        loaded: (() => {
-          const _loaded = {...state.loaded}
-          _loaded[payload] = true
-          return _loaded
-        })()
-      }
     case UPDATE_CHECKOUT :
       return {
         ...state,
@@ -103,12 +98,12 @@ function rootReducer (state = initialState, {type, payload}) {
     case SET_HAS_PAGE_ERROR :
       return {
         ...state,
-        hasPageError: {...state.hasPageError, state: true, msg: payload}
+        hasPageError: {...state.hasPageError, state: payload.state, msg: payload.error}
       }
-    case UPDATE_IS_LOADING :
+    case UPDATE_STATUS :
       return {
         ...state,
-        isLoading: {...state.isLoading, state: payload}
+        [payload.prop]: {...state[payload.prop], state: payload.val}
       }
     case SET_PROP:
       return {

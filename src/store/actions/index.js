@@ -4,7 +4,7 @@ import {
   DEC_ITEM_QTY,
   DEL_ITEM,
   UPDATE_TOTAL,
-  UPDATE_LOADED,
+  // UPDATE_LOADED,
   UPDATE_CHECKOUT,
   RESET_CART,
   SET_INGREDIENTS,
@@ -12,7 +12,7 @@ import {
   SET_HAS_PAGE_ERROR,
   SET_PROP,
   UPDATE_PRICE,
-  UPDATE_IS_LOADING
+  UPDATE_STATUS
 
 } from '../constants/action-types'
 
@@ -38,9 +38,9 @@ export function updateTotal(payload) {
   return {type: UPDATE_TOTAL, payload}
 }
 
-export function updateLoaded(payload) {
-  return {type: UPDATE_LOADED, payload}
-}
+// export function updateLoaded(payload) {
+//   return {type: UPDATE_LOADED, payload}
+// }
 
 export function updateCheckout(payload) {
   return {type: UPDATE_CHECKOUT, payload}
@@ -77,14 +77,37 @@ export function updatePrice () {
   }
 }
 
-export function updateIsLoading (payload) {
+export function updateStatus (payload) {
   return {
-    type: UPDATE_IS_LOADING,
+    type: UPDATE_STATUS,
     payload
   }
 }
 
-export function initIngredients() {
+export function onAddToCart (payload) {
+  return (dispatch) => {
+    axiosInst.get('https://uinames.com/api/?amount=1?maxleng=15')
+    .then(({data}) => {
+      dispatch(setProp({prop: 'customBurgerName', val: data.name}))
+      return axiosInst.get('/ingredients.json')
+    })
+    .then(({data}) => {
+      dispatch(updateStatus({prop: 'isAddedToCart', val: true}))
+      dispatch(addToCart(payload))
+      dispatch(updateTotal())
+      setTimeout(() => {
+        dispatch(setProp({prop: 'ingredients', val: data}))
+        dispatch(updatePrice())
+        dispatch(updateStatus({prop: 'isAddedToCart', val: false}))
+      }, 800)
+    })
+    .catch((error) => {
+      dispatch(setHasPageError({state: true, error: error.message}))
+    })
+  }
+}
+
+export function onInitIngredients() {
   return dispatch => {
     axiosInst.get('/ingredients.json')
     .then(({data}) => {
@@ -93,13 +116,15 @@ export function initIngredients() {
     }).then(({data}) => {
       dispatch(setProp({prop: 'prices', val: data}))
       return axiosInst.get('/basePrice.json')
-    }).then(({data}) => {
+    })
+    .then(({data}) => {
       dispatch(setProp({prop: 'basePrice', val: data}))
       dispatch(setProp({prop: 'price', val: data}))
       dispatch(updatePrice())
-      dispatch(updateIsLoading(false))
-    }).catch((error) => {
-      dispatch(setHasPageError(error))
+      dispatch(updateStatus({prop: 'isLoading', val: false}))
+    })
+    .catch((error) => {
+      dispatch(setHasPageError({state: true, error: error.message}))
     })
   }
 }

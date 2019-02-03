@@ -4,7 +4,7 @@ import Button from '../UI/Button/Button'
 import classes from './OrderSummary.css'
 
 const orderSummary = (props) => {
-  
+
   return (
     <React.Fragment>
       <article className={[classes.item, classes.header].join(' ')}>
@@ -27,7 +27,7 @@ const orderSummary = (props) => {
       }
       {
         props.cart.length ? <article className={classes.total}>
-        <span className={classes.totalText}>Total $ </span>
+        <span className={classes.totalText}>{`${props.isCheckingOut ? 'Grand ' : ''}Total $ `}</span>
         {props.total.toFixed(2)}</article> : ''
       }
       {

@@ -6,7 +6,7 @@ import Controls from '../../components/Controls/Controls'
 import Order from '../../components/UI/Order/Order'
 import axiosInst from '../../axios-order'
 import Spinner from '../../components/UI/Spinner/Spinner'
-import errorWrapper from '../../hoc/errorWrapper/errorWrapper'
+// import errorWrapper from '../../hoc/errorWrapper/errorWrapper'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as actions from '../../store/actions'
@@ -21,43 +21,27 @@ const mapStateToProps = ({
   ingredients,
   customBurgerName,
   price,
-  isLoading
+  isLoading,
+  isAddedToCart
 }) => ({
   hasPageError,
   prices,
   ingredients,
   customBurgerName,
   price,
-  isLoading
+  isLoading,
+  isAddedToCart
 })
-
-
 
 class BurgerBuilder extends Component {
 
   componentDidMount () {
     console.log('[component did mount]: BurgerBuilder')
-    !this.props.ingredients && this.props.initIngredients()
+    !this.props.ingredients && this.props.onInitIngredients()
   }
 
   addToCartHandler = () => {
-    axiosInst.get('https://uinames.com/api/?amount=1?maxleng=15')
-    .then(({data}) => {
-      this.setState({customBurgerName: data.name})
-      return axiosInst.get('/ingredients.json')
-    })
-    .then(({data}) => {
-      this.setState({isAddedToCart: {...this.state.isAddedToCart, state: true}})
-      this.props.addToCart(this.customBurger)
-      setTimeout(() => {
-        this.setState({ingredients: data})
-        this.updatePrice()
-        this.setState({isAddedToCart: {...this.state.isAddedToCart, state: false}})
-      }, 900)
-    })
-    .catch((error) => {
-      // this.setState({hasPageError: {...this.state.hasPageError, state: true}})
-    })
+    this.props.onAddToCart(this.customBurger)
   }
 
   updateIngredientHandler = (igName, changeType) => {
@@ -84,9 +68,9 @@ class BurgerBuilder extends Component {
     return str
   }
 
-  get customBurger () {
+  customBurger = () => {
     return ({
-      title: `${this.state.customBurgerName} Custom Burger`,
+      title: `${this.props.customBurgerName} Custom Burger`,
       desc: this.customBurgerDesc,
       ingredients: this.props.ingredients,
       price: this.props.price,
@@ -95,32 +79,21 @@ class BurgerBuilder extends Component {
   }
 
   get spinnerType () {
-    return [this.props.isLoading,
-      this.props.hasPageError.state,
-      this.state.isAddedToCart
-    ].filter(process => !!process.state)[0].spinner
+    const progress = [this.props.isLoading,
+      this.props.hasPageError,
+      this.props.isAddedToCart
+    ].filter(process => !!process.state)
+    return progress[progress.length-1].spinner
+  }
+
+  get isProgressStatusNeeded () {
+    return this.props.isLoading.state || this.props.isAddedToCart.state || this.props.hasPageError.state
   }
 
   state = {
     controls: [
        'Bacon', 'Cheese', 'Meat', 'Veg'
     ],
-    // prices: null,
-    // basePrice: null,
-    // price: null,
-    // isModalOpen: false,
-    // isLoading: {
-    //   state: true,
-    //   spinner: 'loading'
-    // },
-    // hasPageError: {
-    //   state: false,
-    //   spinner: 'error'
-    // },
-    isAddedToCart: {
-      state: false,
-      spinner: 'added'
-    }
   }
   //Modal is no
   render () {
@@ -128,10 +101,10 @@ class BurgerBuilder extends Component {
       <React.Fragment>
         <div className={heading}>Build a Custom Burger</div>
         {
-          this.props.isLoading.state || this.state.isAddedToCart.state || this.props.hasPageError.state ?
+          this.isProgressStatusNeeded ?
             <Spinner
               type={this.spinnerType}
-            /> :
+            >{this.props.hasPageError.msg || ''}</Spinner> :
           <React.Fragment>
             <div className={classes.content}>
               <Burger ingredients={this.props.ingredients} />
@@ -155,4 +128,4 @@ class BurgerBuilder extends Component {
   }
 }
 
-export default errorWrapper(connect(mapStateToProps, mapDispatchToProps)(BurgerBuilder), axiosInst)
+export default connect(mapStateToProps, mapDispatchToProps)(BurgerBuilder)

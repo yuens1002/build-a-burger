@@ -6,11 +6,13 @@ import { heading } from '../../index.css'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import classes from './Cart.css'
-import { incItemQty, decItemQty, delItem, updateTotal, updateCheckout, resetCart } from '../../store/actions'
+
 import { Link } from 'react-router-dom'
 import axiosInst from '../../axios-order'
 import errorWrapper from '../../hoc/errorWrapper/errorWrapper'
 import Spinner from '../../components/UI/Spinner/Spinner'
+
+import { incItemQty, decItemQty, delItem, updateTotal, updateCheckout, resetCart } from '../../store/actions'
 
 const mapStateToProps = ( {cart, total, isCheckingOut} ) => ({
   cart,
@@ -30,6 +32,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 class Cart extends Component {
 
   placeOrderHandler = () => {
+    window.scrollTo(0,0)
     this.setState({isLoading: true})
     Promise.all([
       axiosInst.get('/prices.json'),
