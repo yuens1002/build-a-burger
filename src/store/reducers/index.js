@@ -27,9 +27,10 @@ const initialState = {
     spinner: 'error',
     msg: ''
   },
-  isLoading: {
+  status: {
     state: true,
-    spinner: 'loading'
+    spinner: 'loading',
+    msg: ''
   },
   isAddedToCart: {
     state: false,
@@ -100,10 +101,10 @@ function rootReducer (state = initialState, {type, payload}) {
         ...state,
         hasPageError: {...state.hasPageError, state: payload.state, msg: payload.error}
       }
-    case UPDATE_STATUS :
+    case UPDATE_STATUS:
       return {
         ...state,
-        [payload.prop]: {...state[payload.prop], state: payload.val}
+        status: {...state.status, ...payload}
       }
     case SET_PROP:
       return {

@@ -5,7 +5,7 @@ const messages = {
   error: 'Error: ',
   loading: 'Page is loading...',
   added: 'Burger Added',
-  success: 'Thank you for your order. Page will reset in 5s'
+  success: 'Success! Thank you for your Order. Redirect in 5s...'
 }
 
 const getText = (type) => {

@@ -9,11 +9,10 @@ import Spinner from '../../components/UI/Spinner/Spinner'
 // import errorWrapper from '../../hoc/errorWrapper/errorWrapper'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import * as actions from '../../store/actions'
+import actions from '../../store/actions'
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({
-  ...actions
-}, dispatch)
+const mapDispatchToProps =
+  dispatch => bindActionCreators({ ...actions }, dispatch)
 
 const mapStateToProps = ({
   hasPageError,
@@ -21,22 +20,25 @@ const mapStateToProps = ({
   ingredients,
   customBurgerName,
   price,
-  isLoading,
-  isAddedToCart
+  status
 }) => ({
   hasPageError,
   prices,
   ingredients,
   customBurgerName,
   price,
-  isLoading,
-  isAddedToCart
+  status
 })
 
 class BurgerBuilder extends Component {
 
   componentDidMount () {
     console.log('[component did mount]: BurgerBuilder')
+    this.props.status.state && !this.props.updateStatus({
+      state: false,
+      spinner: 'loading',
+      msg: ''
+    })
     !this.props.ingredients && this.props.onInitIngredients()
   }
 
@@ -47,8 +49,7 @@ class BurgerBuilder extends Component {
   updateIngredientHandler = (igName, changeType) => {
     const _ig = {...this.props.ingredients}
     changeType ? ++_ig[igName] : --_ig[igName]
-    this.props.setProp({prop: 'ingredients', val: _ig})
-    this.props.updatePrice()
+    this.props.onUpdateIngredient(_ig)
   }
 
   toggleOverFlowClass = () => {
@@ -86,9 +87,9 @@ class BurgerBuilder extends Component {
     return progress[progress.length-1].spinner
   }
 
-  get isProgressStatusNeeded () {
-    return this.props.isLoading.state || this.props.isAddedToCart.state || this.props.hasPageError.state
-  }
+  // get isProgressStatusNeeded () {
+  //   return this.props.isLoading.state || this.props.isAddedToCart.state || this.props.hasPageError.state
+  // }
 
   state = {
     controls: [
@@ -101,11 +102,11 @@ class BurgerBuilder extends Component {
       <React.Fragment>
         <div className={heading}>Build a Custom Burger</div>
         {
-          this.isProgressStatusNeeded ?
+          this.props.status.state ?
             <Spinner
-              type={this.spinnerType}
-            >{this.props.hasPageError.msg || ''}</Spinner> :
-          <React.Fragment>
+              type={this.props.status.spinner}
+            >{this.props.status.msg || ''}</Spinner> :
+          this.props.ingredients ? <React.Fragment>
             <div className={classes.content}>
               <Burger ingredients={this.props.ingredients} />
               <div className={classes.controls}>
@@ -121,7 +122,7 @@ class BurgerBuilder extends Component {
               toAddToCart={this.addToCartHandler}
               price={this.props.price}
             />
-          </React.Fragment>
+          </React.Fragment> : ''
         }
       </React.Fragment>
     )

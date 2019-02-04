@@ -12,62 +12,44 @@ import axiosInst from '../../axios-order'
 import errorWrapper from '../../hoc/errorWrapper/errorWrapper'
 import Spinner from '../../components/UI/Spinner/Spinner'
 
-import { incItemQty, decItemQty, delItem, updateTotal, updateCheckout, resetCart } from '../../store/actions'
+import actions from '../../store/actions/'
 
-const mapStateToProps = ( {cart, total, isCheckingOut} ) => ({
+const mapStateToProps = ({
   cart,
   total,
-  isCheckingOut
+  isCheckingOut,
+  status
+}) => ({
+  cart,
+  total,
+  isCheckingOut,
+  status
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  incItemQty,
-  decItemQty,
-  delItem,
-  updateTotal,
-  updateCheckout,
-  resetCart
+  ...actions
 }, dispatch)
 
 class Cart extends Component {
 
-  placeOrderHandler = () => {
-    window.scrollTo(0,0)
-    this.setState({isLoading: true})
-    Promise.all([
-      axiosInst.get('/prices.json'),
-      axiosInst.get('./basePrice.json')
-    ]).then(([prices, basePrice]) => {
-      const _total = this.props.cart.reduce((total, item) => {
-        return ((Object.keys(prices.data).reduce((subTotal, ingKey) => {
-          return subTotal += (item.ingredients[ingKey] * prices.data[ingKey])
-        }, 0) + basePrice.data) * item.qty) + total
-      }, 0)
-      const _order = {
-        customer: this.state.customer,
-        price: _total,
-        order: this.props.cart
-      }
-      /*****firebase *****************
-      xxx.json for firebase only
-      xxx.json, path/to/record
-      ********************************/
-      axiosInst.post('/orders.json', _order)
-    }).then(response => {
-        this.successOrderHandler()
-      }).catch((pricesError, basePriceError) => {
-        this.setState({hasPageError: true})
-        this.setState({isLoading: false})
-      })
+  componentDidMount () {
+    this.props.status.state
+      && this.props.updateStatus({
+      state: false,
+    })
   }
 
-  successOrderHandler = () => {
-    setTimeout(() => {
-      this.setState({isLoading: false})
-      this.props.updateCheckout(false)
-      this.props.resetCart()
-      this.props.updateTotal()
-    }, 5000)
+  placeOrderHandler = () => {
+    this.props.updateStatus({
+      state: true,
+      spinner: 'success'
+    })
+    window.scrollTo(0,0)
+    this.props.onPlaceOrder({
+      cart: this.props.cart,
+      customer: this.state.customer,
+      history: this.props.history
+    })
   }
 
   checkoutHandler = () => {
@@ -123,7 +105,11 @@ class Cart extends Component {
     return (
       <React.Fragment>
         <header className={heading}>Your Order</header>
-        {this.state.isLoading && <Spinner type="success" />}
+        {this.props.status.state ?
+          <Spinner
+            type={this.props.status.spinner}
+          >{this.props.status.msg || ''}</Spinner> : ''
+        }
         <OrderSummary
           cart={this.props.cart}
           toAddQty={this.addQtyHandler}
@@ -151,4 +137,4 @@ class Cart extends Component {
   }
 }
 
-export default errorWrapper(connect(mapStateToProps, mapDispatchToProps)(Cart), axiosInst)
+export default connect(mapStateToProps, mapDispatchToProps)(Cart)

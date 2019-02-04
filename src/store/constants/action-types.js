@@ -4,10 +4,7 @@ export const INC_ITEM_QTY = 'INC_ITEM_QTY'
 export const DEC_ITEM_QTY = 'DEC_ITEM_QTY'
 export const DEL_ITEM = 'DEL_ITEM'
 export const UPDATE_TOTAL = 'UPDATE_TOTAL'
-// export const UPDATE_LOADED = 'UPDATE_LOADED'
-
 export const ADD_TO_CART = 'ADD_TO_CART'
-
 export const SET_INGREDIENTS = 'SET_INGREDIENTS'
 export const SET_HAS_PAGE_ERROR = 'SET_HAS_PAGE_ERROR'
 export const SET_PROP = 'SET_PROP'
