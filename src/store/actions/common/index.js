@@ -4,7 +4,7 @@ import {
   UPDATE_STATUS
 } from '../../constants/action-types'
 
-export function updateTotal(payload) {
+export function updateTotal (payload) {
   return {
     type: UPDATE_TOTAL,
     payload

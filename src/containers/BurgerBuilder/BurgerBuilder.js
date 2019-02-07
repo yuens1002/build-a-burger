@@ -4,7 +4,7 @@ import { overFlowHidden, heading } from '../../index.css'
 import Burger from '../../components/Burger/Burger'
 import Controls from '../../components/Controls/Controls'
 import Order from '../../components/UI/Order/Order'
-import axiosInst from '../../axios-order'
+// import axiosInst from '../../axios-order'
 import Spinner from '../../components/UI/Spinner/Spinner'
 // import errorWrapper from '../../hoc/errorWrapper/errorWrapper'
 import { bindActionCreators } from 'redux'
@@ -15,14 +15,12 @@ const mapDispatchToProps =
   dispatch => bindActionCreators({ ...actions }, dispatch)
 
 const mapStateToProps = ({
-  hasPageError,
   prices,
   ingredients,
   customBurgerName,
   price,
   status
 }) => ({
-  hasPageError,
   prices,
   ingredients,
   customBurgerName,
@@ -34,7 +32,7 @@ class BurgerBuilder extends Component {
 
   componentDidMount () {
     console.log('[component did mount]: BurgerBuilder')
-    this.props.status.state && !this.props.updateStatus({
+    this.props.status.state && this.props.updateStatus({
       state: false,
       spinner: 'loading',
       msg: ''
@@ -79,24 +77,12 @@ class BurgerBuilder extends Component {
     })
   }
 
-  get spinnerType () {
-    const progress = [this.props.isLoading,
-      this.props.hasPageError,
-      this.props.isAddedToCart
-    ].filter(process => !!process.state)
-    return progress[progress.length-1].spinner
-  }
-
-  // get isProgressStatusNeeded () {
-  //   return this.props.isLoading.state || this.props.isAddedToCart.state || this.props.hasPageError.state
-  // }
-
   state = {
     controls: [
-       'Bacon', 'Cheese', 'Meat', 'Veg'
-    ],
+      'Bacon', 'Cheese', 'Meat', 'Veg'
+    ]
   }
-  //Modal is no
+
   render () {
     return (
       <React.Fragment>

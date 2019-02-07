@@ -1,7 +1,7 @@
 import React from 'react'
 import Button from '../../UI/Button/Button'
 import OrderItemControls from './OrderItemControls/OrderItemControls'
-import { item, qty, desc, controls, price, deleteItemOrTotal, unitPrice } from '../OrderSummary.css'
+import { item, qty, desc, deleteItemOrTotal, unitPrice } from '../OrderSummary.css'
 import { connect } from 'react-redux'
 
 const mapStateToProps = ({isCheckingOut}) => ({

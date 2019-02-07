@@ -29,7 +29,7 @@ export function resetCart (payload) {
 }
 
 export function onPlaceOrder ({cart, customer, history}) {
-  return dispatch => {
+  return (dispatch, getState) => {
     return Promise.all([
       axiosInst.get('/prices.json'),
       axiosInst.get('./basePrice.json')
@@ -55,7 +55,7 @@ export function onPlaceOrder ({cart, customer, history}) {
     .then(() => {
       dispatch(updateCheckout(false))
       dispatch(resetCart())
-      dispatch(common.updateTotal())
+      dispatch(common.updateTotal(getState().cart))
       setTimeout(() => {
         dispatch(common.updateStatus({state: false}))
         history.push('/builder')

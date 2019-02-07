@@ -2,7 +2,6 @@ import axiosInst from '../../../axios-order'
 import * as common from '../common'
 import {
   SET_INGREDIENTS,
-  SET_HAS_PAGE_ERROR,
   UPDATE_PRICE,
   ADD_TO_CART
 } from '../../constants/action-types'
@@ -14,13 +13,6 @@ export function addToCart(payload) {
 export function setIngredients (payload) {
   return {
     type: SET_INGREDIENTS,
-    payload
-  }
-}
-
-export function setHasPageError (payload) {
-  return {
-    type: SET_HAS_PAGE_ERROR,
     payload
   }
 }
@@ -39,7 +31,7 @@ export function onUpdateIngredient (payload) {
 }
 
 export function onAddToCart (payload) {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     dispatch(common.updateStatus({state: true, spinner: 'added', msg: ''}))
     axiosInst.get('https://uinames.com/api/?amount=1?maxleng=15')
     .then(({data}) => {
@@ -48,7 +40,7 @@ export function onAddToCart (payload) {
     })
     .then(({data}) => {
       dispatch(addToCart(payload))
-      dispatch(common.updateTotal())
+      dispatch(common.updateTotal(getState().cart))
       dispatch(common.setProp({prop: 'ingredients', val: data}))
       dispatch(updatePrice())
       setTimeout(() => {
@@ -87,7 +79,7 @@ export function onInitIngredients() {
       dispatch(common.updateStatus({state: false}))
     })
     .catch((error) => {
-      dispatch(setHasPageError({
+      dispatch(common.updateStatus({
         state: true,
         spinner: 'error',
         msg: error.message}))

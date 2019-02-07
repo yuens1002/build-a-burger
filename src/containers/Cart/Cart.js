@@ -2,15 +2,15 @@ import React, { Component } from 'react'
 import OrderSummary from '../../components/OrderSummary/OrderSummary'
 import Button from '../../components/UI/Button/Button'
 import OrderForm from '../../components/OrderSummary/OrderForm/OrderForm'
+import Spinner from '../../components/UI/Spinner/Spinner'
 import { heading } from '../../index.css'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import classes from './Cart.css'
 
 import { Link } from 'react-router-dom'
-import axiosInst from '../../axios-order'
-import errorWrapper from '../../hoc/errorWrapper/errorWrapper'
-import Spinner from '../../components/UI/Spinner/Spinner'
+// import axiosInst from '../../axios-order'
+// import errorWrapper from '../../hoc/errorWrapper/errorWrapper'
 
 import actions from '../../store/actions/'
 
@@ -62,23 +62,22 @@ class Cart extends Component {
 
   addQtyHandler = index => {
     this.props.incItemQty(index)
-    this.props.updateTotal()
+    this.props.updateTotal(this.props.cart)
   }
 
   decreaseQtyHandler = index => {
     this.props.decItemQty(index)
-    this.props.updateTotal()
+    this.props.updateTotal(this.props.cart)
   }
 
   deleteItemHandler = index => {
     this.props.delItem(index)
-    this.props.updateTotal()
+    this.props.updateTotal(this.props.cart)
   }
 
   resetCartHandler = () => {
-    console.log('resetCartHandler called')
     this.props.resetCart()
-    this.props.updateTotal()
+    this.props.updateTotal(this.props.cart)
   }
 
   inputHandler = ({value, name}) => {
@@ -96,9 +95,7 @@ class Cart extends Component {
       state: '',
       zipcode: '',
       email: ''
-    },
-    isLoading: false,
-    hasPageError: false,
+    }
   }
 
   render () {
