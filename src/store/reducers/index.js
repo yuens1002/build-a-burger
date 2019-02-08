@@ -29,7 +29,7 @@ function rootReducer (state = initialState, {type, payload}) {
   switch (type) {
     case UPDATE_TOTAL :
       let _total = 0
-      _total = payload.reduce((all, item) => {
+      _total = state.cart.reduce((all, item) => {
         return all + (item.price * item.qty)
       }, _total)
       return {

@@ -18,9 +18,11 @@ export default function cart (state = [], {type, payload}) {
     case ADD_TO_CART :
       return [...state].concat(payload())
     case INC_ITEM_QTY :
+
       return state.map(({...item}, i) => {
         if (i === payload) {
           item.qty += 1
+          console.log(item)
           return item
         } else return item
       })

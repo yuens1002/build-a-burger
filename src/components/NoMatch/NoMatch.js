@@ -1,13 +1,18 @@
 import React, { Component } from 'react'
 
 class NoMatch extends Component {
+
   componentDidMount () {
-    setInterval(() => {
+    this.iCounter = setInterval(() => {
       this.setTime()
     }, 1000)
     setTimeout(() => {
       this.props.history.push('/')
     }, 5000)
+  }
+
+  componentWillUnmount () {
+    clearInterval(this.iCounter)
   }
 
   state = {

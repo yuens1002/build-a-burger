@@ -62,22 +62,22 @@ class Cart extends Component {
 
   addQtyHandler = index => {
     this.props.incItemQty(index)
-    this.props.updateTotal(this.props.cart)
+    this.props.updateTotal()
   }
 
   decreaseQtyHandler = index => {
     this.props.decItemQty(index)
-    this.props.updateTotal(this.props.cart)
+    this.props.updateTotal()
   }
 
   deleteItemHandler = index => {
     this.props.delItem(index)
-    this.props.updateTotal(this.props.cart)
+    this.props.updateTotal()
   }
 
   resetCartHandler = () => {
     this.props.resetCart()
-    this.props.updateTotal(this.props.cart)
+    this.props.updateTotal()
   }
 
   inputHandler = ({value, name}) => {
