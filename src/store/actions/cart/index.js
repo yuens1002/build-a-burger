@@ -58,7 +58,7 @@ export function onPlaceOrder ({cart, customer, history}) {
       dispatch(common.updateTotal(getState().cart))
       setTimeout(() => {
         dispatch(common.updateStatus({state: false}))
-        history.push('/builder')
+        history.push('/')
       }, 5000)
     })
     .catch(error => {
