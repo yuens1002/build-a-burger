@@ -1,7 +1,42 @@
-.qty, .desc, .controls, .price, .total, .unitPrice, .deleteItemOrTotal {
+.desc {
+  text-align: left;
   width: 100%;
-  text-align: center;
-  padding: 0.5rem 0;
+  font-size: .9rem;
+}
+
+.qty, .unitPrice, .deleteItemOrTotal {
+  padding-left: 3rem;
+  width: 8rem;
+  text-align: right;
+}
+
+.qty, .controls, .price, .unitPrice, .deleteItemOrTotal {
+  display: inline-block;
+
+}
+
+.qty {
+  order: 1;
+  white-space: nowrap;
+  display: flex;
+  justify-content: center;
+}
+
+.unitPrice {
+  order: 2
+}
+
+.deleteItemOrTotal {
+  order: 3
+}
+
+.mobileGroup {
+  padding-top: 1.5rem;
+  justify-content: flex-end;
+  flex-wrap: nowrap;
+  align-items: center;
+  display: flex;
+  width: 100%;
 }
 
 .item {
@@ -31,42 +66,44 @@
   color: #ccc;
 }
 
-.action {
-  text-align: center;
+.total, .action {
+  text-align: right;
 }
 
 @media (min-width: 1025px) {
+
+  .desc {
+    width: 65%;
+  }
+
+  .mobileGroup {
+    justify-content: space-between;
+    padding-top: 0;
+  }
+
+  .qty,
+  .deleteItemOrTotal,
+  .unitPrice  {
+    width: 33%;
+    padding: 0;
+  }
+
+  .deleteItemOrTotal,
+  .unitPrice {
+    text-align: right;
+  }
+
   .item.header {
     display: flex;
   }
-  .total, .action {
-    text-align: right;
-  }
+
   .item {
     display: flex;
     align-items: center;
   }
-  .price, .unitPrice, .deleteItemOrTotal {
-    text-align: center;
-  }
-  .qty {
-    width: 15%;
-    display: flex;
-    justify-content: center;
-  }
-  .desc {
-    text-align: left;
-    width: 60%;
-    font-size: .9rem;
-    padding-right: 2rem;
-  }
+
   .desc h3 {
     margin-top: 0;
   }
-  .unitPrice {
-    width: 15%;
-  }
-  .deleteItemOrTotal {
-    width: 10%;
-  }
+
 }

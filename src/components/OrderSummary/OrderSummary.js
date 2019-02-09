@@ -9,9 +9,11 @@ const orderSummary = (props) => {
     <React.Fragment>
       <article className={[classes.item, classes.header].join(' ')}>
         <div className={classes.desc}>Description</div>
-        <div className={classes.unitPrice}>Price</div>
-        <div className={classes.qty}>{`Qty. ${props.isCheckingOut ? '' : '/ Change Qty.'}`}</div>
-        <div className={classes.deleteItemOrTotal}>{props.isCheckingOut ? 'Total' : 'Delete'}</div>
+        <div className={classes.mobileGroup}>
+          <div className={classes.qty}>{`Qty. ${props.isCheckingOut ? '' : '/ Change Qty.'}`}</div>
+          <div className={classes.deleteItemOrTotal}>{props.isCheckingOut ? 'Total' : 'Delete'}</div>
+          <div className={classes.unitPrice}>Price</div>
+        </div>
       </article>
       {
         props.cart.map((order, n) => {
