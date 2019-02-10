@@ -31,7 +31,7 @@ const mapStateToProps = ({
 class BurgerBuilder extends Component {
 
   componentDidMount () {
-    console.log('[component did mount]: BurgerBuilder')
+    // console.log('[component did mount]: BurgerBuilder')
     this.props.status.state && this.props.updateStatus({
       state: false,
       spinner: 'loading',

@@ -22,7 +22,6 @@ export default function cart (state = [], {type, payload}) {
       return state.map(({...item}, i) => {
         if (i === payload) {
           item.qty += 1
-          console.log(item)
           return item
         } else return item
       })
