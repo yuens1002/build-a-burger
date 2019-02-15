@@ -1,3 +1,5 @@
+
+
 .navItem {
   display: block;
   padding: 1rem 0;
@@ -26,6 +28,13 @@
 }
 
 @media (min-width: 1025px) {
+
+  .shell {
+    display: flex;
+    flex-wrap: nowrap;
+    height: 100%;
+  }
+
   .navItem {
     display: flex;
     align-items: center;

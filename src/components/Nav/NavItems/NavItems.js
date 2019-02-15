@@ -4,12 +4,13 @@ import classes from './NavItems.css'
 import Image from '../../Image/Image'
 
 
-const navItems = () => {
+const navItems = (props) => {
+
   return (
     <nav className={classes.navItems}>
-      <NavItem linkTo="/menu" linkToExact>Store Menu</NavItem>
-      <NavItem linkTo="/" linkToExact>Burger Builder</NavItem>
-      <NavItem linkTo="/bag" linkToExact><Image src='shoppingBag' alt='paper bag' /></NavItem>
+      <NavItem linkTo="/menu" linkToExact clicked={props.toCloseDrawer}>Store Menu</NavItem>
+      <NavItem linkTo="/" linkToExact clicked={props.toCloseDrawer}>Burger Builder</NavItem>
+      <NavItem linkTo="/bag" linkToExact clicked={props.toCloseDrawer}><Image src='shoppingBag' alt='paper bag' /></NavItem>
     </nav>
   )
 }

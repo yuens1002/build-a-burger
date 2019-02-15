@@ -33,17 +33,13 @@
   font-weight: normal;
 }
 
-.close {
-  font-weight: lighter;
-}
-
-.del {
+.del, .close {
   font-weight: bold;
   background: transparent;
   padding: 0.5rem 0.75rem;
 }
 
-.del:hover {
+.del:hover, .close:hover {
   color: blue;
 }
 
